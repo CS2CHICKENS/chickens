@@ -1,6 +1,7 @@
 import type { Env } from "./index";
 import { alert } from "./storage";
 import { LedgerBusy } from "./lease";
+import { warnWorkFailure } from "./diagnostics";
 
 export const workKinds = [
   "index",
@@ -82,7 +83,8 @@ export async function consumeWork(
       }
       message.ack();
     } catch (error) {
-      if (!(error instanceof LedgerBusy))
+      if (!(error instanceof LedgerBusy)) {
+        warnWorkFailure(body.kind, error);
         await alert(
           env,
           "work-" + body.kind,
@@ -90,6 +92,7 @@ export async function consumeWork(
             body.kind +
             " work needs a retry; confirmed progress is retained.",
         );
+      }
       message.retry({ delaySeconds: error instanceof LedgerBusy ? 5 : 30 });
     }
   }

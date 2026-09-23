@@ -18,7 +18,8 @@ import {
   type BalanceEvent,
   type RoundPolicy,
 } from "../../../packages/core/src/index";
-import { bounded, client } from "../../../packages/core/src/chain";
+import { bounded } from "../../../packages/core/src/chain";
+import { workerRpc, warnWorkFailure } from "./diagnostics";
 import {
   deriveHatches,
   matchLaunch,
@@ -113,7 +114,7 @@ export async function tick(env: Env, options: TickOptions = {}) {
     async (env) => {
       const checkpoint = env.checkpoint!;
       if ((await meta(env.DB, "paused")) === "true") return;
-      const rpc = options.rpc ?? client(env.BACKUP_RPC_URL),
+      const rpc = options.rpc ?? workerRpc(env.BACKUP_RPC_URL),
         head = await rpc.getBlockNumber();
       if (head < BigInt(config.confirmations)) return;
       const safeNumber = Number(head - BigInt(config.confirmations));
@@ -595,7 +596,8 @@ export async function tick(env: Env, options: TickOptions = {}) {
         try {
           if (enabled) await finalizePending(env, rpc, tokens, hatches, 20);
           await flushPublications(env);
-        } catch {
+        } catch (error) {
+          warnWorkFailure("settlement", error);
           await alert(
             env,
             "settlement-pending",
@@ -625,7 +627,8 @@ export default {
         try {
           if (env.WORK) await scheduleWork(env, "index");
           else await tick(env);
-        } catch {
+        } catch (error) {
+          warnWorkFailure("tick", error);
           await alert(
             env,
             "tick-failed",

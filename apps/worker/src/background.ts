@@ -1,5 +1,6 @@
 import { config, roundsReady } from "../../../packages/core/src/index";
-import { client, tokenSnapshot } from "../../../packages/core/src/chain";
+import { tokenSnapshot } from "../../../packages/core/src/chain";
+import { workerRpc } from "./diagnostics";
 import { tick, storedTokens, storedHatches, type Env } from "./index";
 import { headers, type Rpc } from "./indexer";
 import { withLedgerLease } from "./lease";
@@ -27,7 +28,7 @@ export async function executeBackground(
       (await meta(locked.DB, "indexStart")) ?? config.factoryStartBlock,
     );
     if (cursor < start) return false;
-    const rpc = providedRpc ?? client(locked.BACKUP_RPC_URL);
+    const rpc = providedRpc ?? workerRpc(locked.BACKUP_RPC_URL);
     const saved = await locked.DB.prepare(
       "SELECT hash FROM blocks WHERE number=?",
     )

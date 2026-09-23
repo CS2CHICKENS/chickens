@@ -22,6 +22,7 @@ import {
   type Token,
   type Swap,
 } from "./index";
+import { rpcFailure, type RpcFailureObserver } from "./rpc-failure";
 
 export const factoryAbi = parseAbi([
   "struct LaunchedToken { address token; address curve; address deployer; address creatorFeeRecipient; address pairToken; uint256 graduationThreshold; uint24 poolFee; int24 tickSpacing; uint16 creatorTaxBps; bool buybackEnabled; uint8 phase; uint256 sweptQuote; uint256 sweptTokens; uint256 sweptAt; bool exists; }",
@@ -75,12 +76,16 @@ export const chain = {
   nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
   rpcUrls: { default: { http: config.rpc } },
 };
-export function client(backup?: string) {
+export function client(backup?: string, onFailure?: RpcFailureObserver) {
   const urls = [...new Set([...(backup ? [backup] : []), ...config.rpc])];
+  const providerKeys = new Map(
+    urls.map((_, index) => ["rpc-" + (index + 1), index + 1]),
+  );
   const transports = (logs = false) =>
     fallback(
-      urls.map((url) =>
+      urls.map((url, index) =>
         http(url, {
+          key: "rpc-" + (index + 1),
           timeout: 20000,
           retryCount: 0,
           batch: logs ? false : { batchSize: 3, wait: 20 },
@@ -98,6 +103,26 @@ export function client(backup?: string) {
     transport: (options) => {
       const archive = transports()(options);
       const logs = transports(true)(options);
+      if (onFailure)
+        for (const transport of [archive, logs])
+          transport.value?.onResponse(
+            ({ status, error, method, transport: provider }) => {
+              if (status !== "error") return;
+              try {
+                void Promise.resolve(
+                  onFailure(
+                    rpcFailure(
+                      error,
+                      method,
+                      providerKeys.get(provider.config.key),
+                    ),
+                  ),
+                ).catch(() => {});
+              } catch {
+                // An observer cannot change request or fallback behavior.
+              }
+            },
+          );
       return {
         ...archive,
         request: ((args, requestOptions) =>
