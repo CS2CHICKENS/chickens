@@ -40,7 +40,7 @@ EGG and CHICK are not families. They do not compete in rounds, but they earn fro
 
 - A round ends when the **combined trading volume of all family tokens** reaches the round threshold. EGG and CHICK volume does not count toward the threshold.
 - **No minimum duration:** a qualifying trade can finish a round immediately, including in its opening block.
-- **Opening:** round 1 starts at the block of the first confirmed, verified family trade with nonzero volume. EGG, CHICK, zero-volume events and fee credits cannot start it. No fees or volume before that block enter its pot.
+- **Opening:** round 1 starts at the block of the first confirmed, verified family trade with nonzero volume. EGG, CHICK, zero-volume events and fee credits cannot start it. Verified official-token creator fees recognized before that block are reserved for round 1 and included once in its pot. Earlier volume does not count toward the family quota or holding period.
 - **Timeout:** round 1 has no time limit. From round 2 onward, a round without a qualifying finish within 72 hours ends with no winner (see §8).
 - The **winning family** is the family with the most trading volume during the round (default + all its variants combined).
 - The round ends at the exact block of the swap that crosses the threshold. The next round starts at the next block.
@@ -76,8 +76,12 @@ The split is a distribution of the project's creator fees, not of all fees paid 
 The **pot** of a round is computed, not guessed:
 
 ```
-pot = floor(verified ETH creator fees recognized during the round / 2)
+roundFees = verified ETH creator fees recognized during the round
+allocatedFees = roundFees + openingReserve (round 1 only)
+pot = floor(allocatedFees / 2)
 ```
+
+`openingReserve` contains verified ETH creator fees from official tokens before the first family trade, starting at the published fee-accounting block. It is included only in round 1. FEED displays those fees and each token's indexed trading volume even while the family competition is waiting to start. The reserve does not change the 100 ETH family quota or give earlier holdings additional round time.
 
 Native-ETH fees are recognized when they accrue, including EGG and CHICK trades. The calculation preserves Pons' aggregate protocol-fee rounding across trades and resets at each sweep. After graduation, some fees accrue in tokens. They enter the ETH pot only when an on-chain conversion and sweep prove the actual ETH proceeds; they are assigned to the round containing that realization, not retroactively estimated at a market price. Unknown or changed fee policies stop settlement until reconciled.
 
@@ -88,6 +92,8 @@ The collected total follows confirmed ETH claims and direct fee payments to the 
 Before round activation, fees accrued to the original creator destination are excluded from the collection wallet's generated total. The initial transfer of fee rights to the configured collection wallet is accepted only with no pending curve fees or creator tax. Outstanding balances, other recipient changes, and changes during active rounds require reconciliation before accounting continues.
 
 The operator initiates settlement locally using wallet confirmations. Until a transaction is confirmed, the site shows an obligation or pending operation, not a completed payment. Any per-round/split rounding difference remains a separately reconcilable Feed reserve. The developer counter covers only proven project-fee payments to the developer destination. It does not follow that address's later spending.
+
+Settlement amounts come from the verified round manifest, never from the Feed wallet's available balance. Extra deposits or funds for later rounds cannot enlarge the current allocation. The local workflow allocates the developer half through Split before sending holder payments or cooking, then finishes that round before starting another settlement. Unrecorded manual claims or outgoing transfers stop settlement for reconciliation; the application does not infer which round they paid. Previous small rewards can be paid with a later round only through the manifest's explicit carry-over accounting.
 
 ## 6. Pot split
 

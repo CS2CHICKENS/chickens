@@ -4,6 +4,8 @@ import {
   excludedAddresses,
   json,
   type Carry,
+  type Round,
+  type Swap,
 } from "../packages/core/src/index";
 import { weights, buildManifest } from "../packages/core/src/engine";
 import { tokenSnapshot } from "../packages/core/src/chain";
@@ -28,9 +30,11 @@ export function financialManifest(value: Manifest) {
   return {
     version: value.version,
     round: value.round,
+    feeStartBlock: value.feeStartBlock,
     endBlock: value.endBlock,
     potWei: value.potWei,
     creatorFeesWei: value.creatorFeesWei,
+    preStartCreatorFeesWei: value.preStartCreatorFeesWei,
     payouts: value.payouts,
     carry: value.carry,
     hash: value.hash,
@@ -50,11 +54,30 @@ export function compareManifest(expected: Manifest, published: Manifest) {
       "Published settlement differs from independent chain reconstruction",
     );
 }
+export function assertVerifiedSettlementFees(
+  swaps: Swap[],
+  rounds: Round[],
+  roundId: number,
+) {
+  const first = rounds[0],
+    last = rounds.find((round) => round.id === roundId);
+  if (!first || !last) throw Error("Round has not ended");
+  if (
+    swaps.some(
+      (swap) =>
+        swap.block >= (first.feeStartBlock ?? first.startBlock) &&
+        swap.block <= last.endBlock &&
+        swap.feeVerified !== true,
+    )
+  )
+    throw Error("Unverified fees prevent settlement");
+}
 export async function prepareRound(roundId: number) {
   if (!Number.isSafeInteger(roundId) || roundId < 1)
     throw Error("Choose a positive round number");
   const history = await reconstruct();
   const { rpc, result, tokens, events } = history;
+  assertVerifiedSettlementFees(history.swaps, result.rounds, roundId);
   let priorStreaks: Record<string, number> = {},
     carry: Carry[] = [];
   const manifests: Manifest[] = [];
@@ -118,15 +141,6 @@ export async function prepareRound(roundId: number) {
   const manifest = manifests.at(-1);
   if (!manifest || manifest.round !== roundId)
     throw Error("Round has not ended");
-  if (
-    history.swaps.some(
-      (s) =>
-        s.block >= result.rounds[0].startBlock &&
-        s.block <= manifest.endBlock &&
-        !s.feeVerified,
-    )
-  )
-    throw Error("Unverified fees prevent settlement");
   const endHash = (
     await rpc.getBlock({ blockNumber: BigInt(manifest.endBlock) })
   ).hash;

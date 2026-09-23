@@ -223,9 +223,11 @@ export function buildManifest(
   return {
     version: 2,
     round: round.id,
+    feeStartBlock: round.feeStartBlock ?? round.startBlock,
     endBlock: round.endBlock,
     potWei: round.pot.toString(),
     creatorFeesWei: round.creatorFeeWei?.toString() ?? null,
+    preStartCreatorFeesWei: (round.preStartCreatorFeeWei ?? 0n).toString(),
     payouts: settlement.paid.map((p) => ({
       ...p,
       amountWei: p.amountWei.toString(),

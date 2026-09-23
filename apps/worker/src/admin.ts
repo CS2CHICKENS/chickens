@@ -179,6 +179,8 @@ export async function handleAdmin(request: Request, env: Env) {
           "wallet_metric_jobs",
           "wallet_reward_changes",
           "wallet_reward_totals",
+          "feed_source_changes",
+          "feed_source_totals",
         ].map((table) => env.DB.prepare("DELETE FROM " + table)),
         env.DB.prepare("DELETE FROM tokens WHERE role='variant'"),
         env.DB.prepare(

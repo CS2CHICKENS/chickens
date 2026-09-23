@@ -1,10 +1,4 @@
-import {
-  parseAbi,
-  parseEther,
-  keccak256,
-  stringToHex,
-  type Address,
-} from "viem";
+import { parseAbi, parseEther, type Address } from "viem";
 import {
   config,
   roundsReady,
@@ -56,6 +50,7 @@ import { handleAdmin } from "./admin";
 import { withLedgerLease } from "./lease";
 import { scheduleWork, consumeWork, type WorkMessage } from "./work-queue";
 import { executeBackground } from "./background";
+import { acceptRoundRules } from "./round-rules";
 export interface Env {
   DB: D1Database;
   DATA: R2Bucket;
@@ -182,20 +177,14 @@ export async function tick(env: Env, options: TickOptions = {}) {
       let active = reviveActive(await meta(env.DB, "active"));
       let enabled = roundsReady();
       if (enabled) {
-        const fingerprint = keccak256(
-          stringToHex(
-            json({
-              round: config.round,
-              testMode: config.testMode,
-              fees: config.fees,
-              split: config.split,
-              payouts: config.payouts,
-              families: config.families,
-            }),
-          ),
+        const rules = await acceptRoundRules(
+          env,
+          active,
+          previousRounds.length > 0,
+          cursor,
+          indexStart,
         );
-        const saved = await meta(env.DB, "rulesFingerprint");
-        if (saved && saved !== fingerprint) {
+        if (!rules.accepted) {
           await putMeta(env.DB, "paused", "true");
           await alert(
             env,
@@ -204,7 +193,7 @@ export async function tick(env: Env, options: TickOptions = {}) {
           );
           return;
         }
-        if (!saved) await putMeta(env.DB, "rulesFingerprint", fingerprint);
+        active = rules.active;
       }
       if (
         enabled &&
@@ -230,6 +219,10 @@ export async function tick(env: Env, options: TickOptions = {}) {
           tokens: {},
           families: {},
           creatorFeeWei: 0n,
+          preStartCreatorFeeWei: 0n,
+          feeStartBlock: previousRounds.at(-1)
+            ? previousRounds.at(-1)!.endBlock + 1
+            : roundStartBlock(),
           growthSteps: 0,
         };
       let to = staged
@@ -275,6 +268,8 @@ export async function tick(env: Env, options: TickOptions = {}) {
                 tokens: active.tokens,
                 families: active.families,
                 creatorFeeWei: active.creatorFeeWei,
+                preStartCreatorFeeWei: active.preStartCreatorFeeWei,
+                feeStartBlock: active.feeStartBlock,
               },
             }
           : {};

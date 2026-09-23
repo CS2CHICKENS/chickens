@@ -23,6 +23,7 @@
     "firstThresholdEth": "100",
     "startMode": "first-family-trade",
     "firstRoundTimeout": false,
+    "preStartFeePolicy": "reserve-for-first-round",
     "thresholdProgression": "launched-variants",
     "thresholdGrowth": 0.1,
     "minDurationSec": 0,

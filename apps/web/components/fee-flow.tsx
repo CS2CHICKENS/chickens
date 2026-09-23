@@ -74,11 +74,12 @@ export function FeeFlow() {
         <Explain title="Why is the current pot different from the Feed balance?">
           <p>
             The community receives 50% of verified ETH creator fees recognized
-            during the round. The Feed balance is the ETH currently held by the
-            collection and community wallet. Its balance may include the
-            developer's unpaid share and reserved community funds. They can
-            differ while fees are awaiting collection, rewards are unpaid, or
-            cooks and payouts are being executed.
+            during the round. Round 1 also includes verified creator fees
+            reserved before its first family trade. The Feed balance is the ETH
+            currently held by the collection and community wallet. Its balance
+            may include the developer's unpaid share and reserved community
+            funds. They can differ while fees are awaiting collection, rewards
+            are unpaid, or cooks and payouts are being executed.
           </p>
           <p>
             Generated fees, claimable fees and collected fees are separate

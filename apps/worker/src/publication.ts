@@ -33,11 +33,14 @@ import {
 import { feeCollectionState } from "./fee-claims";
 import { walletMetrics } from "./wallet-publication";
 import { walletRewards } from "./wallet-rewards";
+import { maintainFeedSources } from "./feed-sources";
 export type ActiveRound = ReturnType<typeof replayRounds>["active"];
 export function reviveRound(data: string): Round {
   const round = JSON.parse(data);
   if (round.creatorFeeWei !== undefined)
     round.creatorFeeWei = BigInt(round.creatorFeeWei);
+  if (round.preStartCreatorFeeWei !== undefined)
+    round.preStartCreatorFeeWei = BigInt(round.preStartCreatorFeeWei);
   for (const key of ["pot", "threshold"]) round[key] = BigInt(round[key]);
   for (const key of ["volumes", "familyVolumes"])
     round[key] = Object.fromEntries(
@@ -53,6 +56,8 @@ export function reviveActive(data?: string): ActiveRound | null {
   const active = JSON.parse(data);
   active.threshold = BigInt(active.threshold);
   active.creatorFeeWei = BigInt(active.creatorFeeWei ?? "0");
+  active.preStartCreatorFeeWei = BigInt(active.preStartCreatorFeeWei ?? "0");
+  active.feeStartBlock ??= active.startBlock;
   for (const key of ["tokens", "families"])
     active[key] = Object.fromEntries(
       Object.entries(active[key]).map(([id, value]) => [
@@ -96,7 +101,7 @@ export async function publish(
 ) {
   const state: PublicState = structuredClone(emptyState);
   state.mode =
-    active && active.startTs
+    active && (active.startTs || active.id > 1)
       ? config.testMode
         ? "demo"
         : "live"
@@ -179,10 +184,17 @@ export async function publish(
   if (selected) state.incubator = selected;
   const accounting = await maintainAccounting(env);
   if (accounting.more) state.stale = true;
+  const contribution = await maintainFeedSources(env, tokens, indexed.number);
+  if (contribution.more) state.stale = true;
   const generated = await meta(env.DB, "creatorFeesWei"),
     feesVerified = await meta(env.DB, "feesVerified");
   state.feed = {
     ...state.feed,
+    sources: contribution.sources,
+    preStartCreatorFeeWei:
+      active?.id === 1 && feesVerified === "true"
+        ? active.preStartCreatorFeeWei.toString()
+        : null,
     balanceWei: config.wallets.feed
       ? (
           await rpc.getBalance({

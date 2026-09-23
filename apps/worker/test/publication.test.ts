@@ -163,6 +163,54 @@ test("historical accounting drains more than fifty thousand payments exactly and
   sql.close();
 });
 
+test("round two stays live before its opening timestamp is indexed", async () => {
+  const { env, sql, objects } = fixture(),
+    { rpc } = mockRpc();
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => new Response(JSON.stringify({ coins: {} }));
+  try {
+    addRound(sql, 1);
+    const active = {
+      id: 2,
+      startBlock: 11,
+      feeStartBlock: 11,
+      startTs: 0,
+      threshold: 100n * WAD,
+      growthSteps: 0,
+      tokens: {},
+      families: {},
+      creatorFeeWei: 0n,
+      preStartCreatorFeeWei: 0n,
+    };
+    const block = { number: 10, ts: 100, hash: hash(10) };
+    await publish(env, rpc, [], [], [], active, block, block, {
+      wallets: false,
+    });
+    const state = JSON.parse(objects.get("state.json")!);
+    assert.equal(state.mode, "live");
+    assert.equal(state.round.id, 2);
+    assert.equal(state.round.startBlock, 11);
+    assert.equal(state.round.endsBy, 0);
+    assert.deepEqual(state.round.volumeByToken, {});
+    assert.equal(state.feed.preStartCreatorFeeWei, null);
+    await publish(
+      env,
+      rpc,
+      [],
+      [],
+      [],
+      { ...active, id: 1, startBlock: 1, feeStartBlock: 1 },
+      block,
+      block,
+      { wallets: false },
+    );
+    assert.equal(JSON.parse(objects.get("state.json")!).mode, "monitoring");
+  } finally {
+    globalThis.fetch = originalFetch;
+    sql.close();
+  }
+});
+
 test("wallet continuations refresh a thousand holders in bounded sweeps without marking untouched files fresh", async () => {
   const { env, sql, objects, counts } = fixture(),
     { rpc } = mockRpc();
@@ -245,12 +293,14 @@ test("a wallet with over twenty thousand transfers resumes without blocking othe
   const active = {
     id: 5,
     startBlock: 10,
+    feeStartBlock: 10,
     startTs: 100,
     threshold: 100n,
     growthSteps: 0,
     tokens: {},
     families: {},
     creatorFeeWei: 0n,
+    preStartCreatorFeeWei: 0n,
   };
   const prices = { chick: WAD };
   const events: BalanceEvent[] = [];

@@ -53,7 +53,7 @@ export async function finalizePending(
   const unverified = await env.DB.prepare(
     "SELECT id FROM swaps WHERE block>=? AND block<=? AND feeVerified=0 LIMIT 1",
   )
-    .bind(round.startBlock, round.endBlock)
+    .bind(round.feeStartBlock ?? round.startBlock, round.endBlock)
     .first();
   if (unverified)
     throw Error("Round fees have not been independently verified");

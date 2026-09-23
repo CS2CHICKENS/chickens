@@ -5,6 +5,7 @@ import { KitchenScene } from "./scenes";
 import { FamilyBattle } from "./battle";
 import { Explain } from "./help";
 import { FeeFlow } from "./fee-flow";
+import { FeedSources } from "./feed-sources";
 import { ArchivePicker, useArchive } from "./history";
 import { WalletRewards } from "./wallet-rewards";
 import { formatEther, isAddress, type Address } from "viem";
@@ -206,8 +207,9 @@ export function Feed() {
       <Title
         eyebrow="THE PUBLIC POT / EVERY WEI ACCOUNTED FOR"
         title="THE FEED"
-        detail="Trading fills the bag. The rules decide where it goes."
+        detail="Every official token fills the bag. EGG and CHICK included."
       />
+      <FeedSources />
       <section className="fee-collection">
         <h3>FEE COLLECTION WALLET</h3>
         <p>

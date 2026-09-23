@@ -114,6 +114,9 @@ export async function executeBackground(
         "SELECT sequence FROM publication_changes LIMIT 1",
       ).first()) ||
       !!(await locked.DB.prepare(
+        "SELECT sequence FROM feed_source_changes LIMIT 1",
+      ).first()) ||
+      !!(await locked.DB.prepare(
         "SELECT page FROM history_dirty LIMIT 1",
       ).first()) ||
       !!(await locked.DB.prepare(

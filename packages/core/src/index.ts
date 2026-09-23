@@ -57,6 +57,7 @@ export type BalanceEvent = {
 export type Round = {
   id: number;
   startBlock: number;
+  feeStartBlock?: number;
   startTs: number;
   endBlock: number;
   endTs: number;
@@ -68,6 +69,7 @@ export type Round = {
   reason: "threshold" | "timeout";
   pot: bigint;
   creatorFeeWei?: bigint;
+  preStartCreatorFeeWei?: bigint;
 };
 export type Payout = {
   wallet: Address;
@@ -148,14 +150,17 @@ export function roundVolume(swaps: Swap[]) {
 }
 export type RoundPolicy = {
   waitForFirstTrade?: boolean;
+  preStartFeePolicy?: "reserve-for-first-round";
   firstRoundTimeout?: boolean;
   launchBlocks?: number[];
   firstRoundId?: number;
   seed?: {
     startTs: number;
+    feeStartBlock?: number;
     tokens: Record<string, bigint>;
     families: Record<string, bigint>;
     creatorFeeWei: bigint;
+    preStartCreatorFeeWei?: bigint;
   };
   minDuration: number;
   timeout: number;
@@ -176,6 +181,8 @@ export function replayRounds(
   let tokens = { ...policy.seed?.tokens },
     families = { ...policy.seed?.families };
   let fees = policy.seed?.creatorFeeWei ?? 0n,
+    preStartFees = policy.seed?.preStartCreatorFeeWei ?? 0n,
+    feeStartBlock = policy.seed?.feeStartBlock ?? startBlock,
     startTs = policy.seed?.startTs ?? 0,
     first = startBlock,
     offset = 0;
@@ -191,6 +198,8 @@ export function replayRounds(
     .filter((b) => b.number >= startBlock)
     .sort((a, b) => a.number - b.number)) {
     const roundId = rounds.length + (policy.firstRoundId ?? 1);
+    while (offset < ordered.length && ordered[offset].block < b.number)
+      offset++;
     if (!startTs && roundId === 1 && policy.waitForFirstTrade) {
       if (
         !ordered.some(
@@ -201,13 +210,23 @@ export function replayRounds(
             swap.kind !== "fee-credit" &&
             swap.feeVerified === true,
         )
-      )
+      ) {
+        while (offset < ordered.length && ordered[offset].block === b.number) {
+          const swap = ordered[offset++];
+          if (
+            policy.preStartFeePolicy === "reserve-for-first-round" &&
+            swap.feeVerified === true
+          ) {
+            const fee = creatorFees([swap]);
+            fees += fee;
+            preStartFees += fee;
+          }
+        }
         continue;
+      }
       first = b.number;
     }
     if (!startTs) startTs = b.ts;
-    while (offset < ordered.length && ordered[offset].block < b.number)
-      offset++;
     const limit = thresholdFor(policy.firstThreshold, growthSteps() + 1);
     let reason: Round["reason"] | null =
       (roundId !== 1 || policy.firstRoundTimeout !== false) &&
@@ -249,6 +268,7 @@ export function replayRounds(
       rounds.push({
         id: rounds.length + (policy.firstRoundId ?? 1),
         startBlock: first,
+        feeStartBlock,
         startTs,
         endBlock: b.number,
         endTs: b.ts,
@@ -260,12 +280,15 @@ export function replayRounds(
         reason,
         pot: (fees * bps(config.fees.feedShareOfCreatorFee)) / BPS,
         creatorFeeWei: fees,
+        preStartCreatorFeeWei: preStartFees,
       });
       tokens = {};
       families = {};
       familyVolume = 0n;
       fees = 0n;
+      preStartFees = 0n;
       first = b.number + 1;
+      feeStartBlock = first;
       startTs = 0;
     }
   }
@@ -274,12 +297,14 @@ export function replayRounds(
     active: {
       id: rounds.length + (policy.firstRoundId ?? 1),
       startBlock: first,
+      feeStartBlock,
       startTs,
       threshold: thresholdFor(policy.firstThreshold, growthSteps() + 1),
       growthSteps: growthSteps(),
       tokens,
       families,
       creatorFeeWei: fees,
+      preStartCreatorFeeWei: preStartFees,
     },
   };
 }
@@ -530,13 +555,20 @@ export function gameRoundPolicy(
   testMode = false,
 ): Pick<
   RoundPolicy,
-  "waitForFirstTrade" | "firstRoundTimeout" | "launchBlocks"
+  | "waitForFirstTrade"
+  | "preStartFeePolicy"
+  | "firstRoundTimeout"
+  | "launchBlocks"
 > {
   return {
     waitForFirstTrade:
       !testMode &&
       config.round.startBlock === null &&
       config.round.startMode === "first-family-trade",
+    preStartFeePolicy:
+      config.round.preStartFeePolicy === "reserve-for-first-round"
+        ? "reserve-for-first-round"
+        : undefined,
     firstRoundTimeout: testMode || config.round.firstRoundTimeout,
     launchBlocks:
       config.round.thresholdProgression === "launched-variants"

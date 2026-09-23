@@ -56,6 +56,7 @@ export const publicStateSchema = z.object({
     devWithdrawnWei: uint,
     generatedWei: uint.nullable().default(null),
     generatedRoundWei: uint.nullable().default(null),
+    preStartCreatorFeeWei: uint.nullable().default(null),
     collectedWei: uint.nullable().default(null),
     claimableWei: uint.nullable().default(null),
     feeAccountingStartBlock: z.number().nullable().default(null),
@@ -72,6 +73,20 @@ export const publicStateSchema = z.object({
         upperBoundWei: uint.nullable(),
         escrowClaimedWei: uint.nullable(),
         otherCreditsWei: uint.nullable(),
+      })
+      .optional(),
+    sources: z
+      .object({
+        ready: z.boolean(),
+        fromBlock: z.number().int().nonnegative(),
+        throughBlock: z.number().int().nonnegative().nullable(),
+        totals: z.array(
+          z.object({
+            token: z.string(),
+            volumeWei: uint,
+            creatorFeeWei: uint.nullable(),
+          }),
+        ),
       })
       .optional(),
   }),
@@ -169,6 +184,7 @@ export const emptyState: PublicState = {
     devWithdrawnWei: "0",
     generatedWei: null,
     generatedRoundWei: null,
+    preStartCreatorFeeWei: null,
     collectedWei: null,
     claimableWei: null,
     feeAccountingStartBlock: null,
