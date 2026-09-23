@@ -105,6 +105,7 @@ export function TokenDetail({ id }: { id: string }) {
         <div className="token-summary">
           <span className="eyebrow">ROBINHOOD CHAIN / TOKEN DOSSIER</span>
           <h1>{title}</h1>
+          <p className="eyebrow">TICKER / {base?.symbol ?? meta?.symbol}</p>
           <p className="token-tagline">{role}</p>
           {address ? (
             <>

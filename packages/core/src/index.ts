@@ -15,6 +15,14 @@ export const config = configFile as Omit<
 };
 export const WAD = 10n ** 18n;
 export const BPS = 10000n;
+export function matchesVariant(id: string, name: string, symbol: string) {
+  const meta = config.variantMeta[id as keyof typeof config.variantMeta];
+  return (
+    !!meta &&
+    meta.displayName.toLowerCase() === name.trim().toLowerCase() &&
+    meta.symbol === symbol.toUpperCase()
+  );
+}
 export const bps = (value: number) => BigInt(Math.round(value * 10000));
 export type Family = "catalana" | "polish" | "silkie";
 export type Token = {

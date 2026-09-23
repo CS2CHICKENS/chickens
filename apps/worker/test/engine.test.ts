@@ -41,7 +41,14 @@ test("full tiny-threshold round and incubation are reproducible", () => {
     name =
       config.variantMeta[h.variant as keyof typeof config.variantMeta]
         .displayName;
-  assert.equal(matchLaunch(name, h.variant!, a.hatches), h);
+  assert.equal(
+    matchLaunch(
+      name,
+      config.variantMeta[h.variant as keyof typeof config.variantMeta].symbol,
+      a.hatches,
+    ),
+    h,
+  );
   assert.equal(matchLaunch(name, "FAKE", a.hatches), null);
 });
 test("settlement conserves pot plus carry and excludes nonrecipients", () => {

@@ -172,207 +172,248 @@
     "silkie-leopard": {
       "displayName": "Silkie Leopard",
       "rarity": "covert",
-      "image": "silkie-leopard"
+      "image": "silkie-leopard",
+      "symbol": "SLEOPARD"
     },
     "catalana-black-white-head": {
       "displayName": "Catalana Black White Head",
       "rarity": "mil-spec",
-      "image": "catalana-black-white-head"
+      "image": "catalana-black-white-head",
+      "symbol": "CBWH"
     },
     "catalana-black-with-red-head": {
       "displayName": "Catalana Black With Red Head",
       "rarity": "mil-spec",
-      "image": "catalana-black-with-red-head"
+      "image": "catalana-black-with-red-head",
+      "symbol": "CBWRH"
     },
     "catalana-black": {
       "displayName": "Catalana Black",
       "rarity": "mil-spec",
-      "image": "catalana-black"
+      "image": "catalana-black",
+      "symbol": "CBLACK"
     },
     "catalana-blue-and-light-orange": {
       "displayName": "Catalana Blue And Light Orange",
       "rarity": "mil-spec",
-      "image": "catalana-blue-and-light-orange"
+      "image": "catalana-blue-and-light-orange",
+      "symbol": "CBALO"
     },
     "catalana-blue": {
       "displayName": "Catalana Blue",
       "rarity": "mil-spec",
-      "image": "catalana-blue"
+      "image": "catalana-blue",
+      "symbol": "CBLUE"
     },
     "catalana-dark-orange": {
       "displayName": "Catalana Dark Orange",
       "rarity": "mil-spec",
-      "image": "catalana-dark-orange"
+      "image": "catalana-dark-orange",
+      "symbol": "CDORANGE"
     },
     "catalana-grey": {
       "displayName": "Catalana Grey",
       "rarity": "mil-spec",
-      "image": "catalana-grey"
+      "image": "catalana-grey",
+      "symbol": "CGREY"
     },
     "catalana-light-blue-and-red": {
       "displayName": "Catalana Light Blue And Red",
       "rarity": "mil-spec",
-      "image": "catalana-light-blue-and-red"
+      "image": "catalana-light-blue-and-red",
+      "symbol": "CLBAR"
     },
     "catalana-orange-blue-neck": {
       "displayName": "Catalana Orange Blue Neck",
       "rarity": "mil-spec",
-      "image": "catalana-orange-blue-neck"
+      "image": "catalana-orange-blue-neck",
+      "symbol": "COBN"
     },
     "catalana-red-yellow-gradient": {
       "displayName": "Catalana Red Yellow Gradient",
       "rarity": "mil-spec",
-      "image": "catalana-red-yellow-gradient"
+      "image": "catalana-red-yellow-gradient",
+      "symbol": "CRYG"
     },
     "catalana-tan": {
       "displayName": "Catalana Tan",
       "rarity": "mil-spec",
-      "image": "catalana-tan"
+      "image": "catalana-tan",
+      "symbol": "CTAN"
     },
     "catalana-white-tan-head": {
       "displayName": "Catalana White Tan Head",
       "rarity": "mil-spec",
-      "image": "catalana-white-tan-head"
+      "image": "catalana-white-tan-head",
+      "symbol": "CWTH"
     },
     "catalana-white": {
       "displayName": "Catalana White",
       "rarity": "mil-spec",
-      "image": "catalana-white"
+      "image": "catalana-white",
+      "symbol": "CWHITE"
     },
     "catalana-yellow-and-red": {
       "displayName": "Catalana Yellow And Red",
       "rarity": "mil-spec",
-      "image": "catalana-yellow-and-red"
+      "image": "catalana-yellow-and-red",
+      "symbol": "CYAR"
     },
     "catalana-yellow-red-gradient": {
       "displayName": "Catalana Yellow Red Gradient",
       "rarity": "mil-spec",
-      "image": "catalana-yellow-red-gradient"
+      "image": "catalana-yellow-red-gradient",
+      "symbol": "CYRG"
     },
     "polish-black-with-white-head": {
       "displayName": "Polish Black With White Head",
       "rarity": "mil-spec",
-      "image": "polish-black-with-white-head"
+      "image": "polish-black-with-white-head",
+      "symbol": "PBLACK"
     },
     "polish-blue-yellow": {
       "displayName": "Polish Blue Yellow",
       "rarity": "mil-spec",
-      "image": "polish-blue-yellow"
+      "image": "polish-blue-yellow",
+      "symbol": "PBY"
     },
     "polish-blue": {
       "displayName": "Polish Blue",
       "rarity": "mil-spec",
-      "image": "polish-blue"
+      "image": "polish-blue",
+      "symbol": "PBLUE"
     },
     "polish-brown-with-black-wing-tips": {
       "displayName": "Polish Brown With Black Wing Tips",
       "rarity": "mil-spec",
-      "image": "polish-brown-with-black-wing-tips"
+      "image": "polish-brown-with-black-wing-tips",
+      "symbol": "PBWBWT"
     },
     "polish-brown": {
       "displayName": "Polish Brown",
       "rarity": "mil-spec",
-      "image": "polish-brown"
+      "image": "polish-brown",
+      "symbol": "PBROWN"
     },
     "polish-green-with-red-head": {
       "displayName": "Polish Green With Red Head",
       "rarity": "mil-spec",
-      "image": "polish-green-with-red-head"
+      "image": "polish-green-with-red-head",
+      "symbol": "PGWRH"
     },
     "polish-green": {
       "displayName": "Polish Green",
       "rarity": "mil-spec",
-      "image": "polish-green"
+      "image": "polish-green",
+      "symbol": "PGREEN"
     },
     "polish-orange-white-blue": {
       "displayName": "Polish Orange White Blue",
       "rarity": "mil-spec",
-      "image": "polish-orange-white-blue"
+      "image": "polish-orange-white-blue",
+      "symbol": "POWB"
     },
     "polish-orange-with-black-stripes": {
       "displayName": "Polish Orange With Black Stripes",
       "rarity": "mil-spec",
-      "image": "polish-orange-with-black-stripes"
+      "image": "polish-orange-with-black-stripes",
+      "symbol": "POWBS"
     },
     "polish-pink": {
       "displayName": "Polish Pink",
       "rarity": "mil-spec",
-      "image": "polish-pink"
+      "image": "polish-pink",
+      "symbol": "PPINK"
     },
     "polish-red": {
       "displayName": "Polish Red",
       "rarity": "mil-spec",
-      "image": "polish-red"
+      "image": "polish-red",
+      "symbol": "PRED"
     },
     "polish-white-black-head": {
       "displayName": "Polish White Black Head",
       "rarity": "mil-spec",
-      "image": "polish-white-black-head"
+      "image": "polish-white-black-head",
+      "symbol": "PWBH"
     },
     "polish-white-with-black-wing-tips": {
       "displayName": "Polish White With Black Wing Tips",
       "rarity": "mil-spec",
-      "image": "polish-white-with-black-wing-tips"
+      "image": "polish-white-with-black-wing-tips",
+      "symbol": "PWWBWT"
     },
     "silkie-aqua-with-yellow": {
       "displayName": "Silkie Aqua With Yellow",
       "rarity": "mil-spec",
-      "image": "silkie-aqua-with-yellow"
+      "image": "silkie-aqua-with-yellow",
+      "symbol": "SAWY"
     },
     "silkie-black": {
       "displayName": "Silkie Black",
       "rarity": "mil-spec",
-      "image": "silkie-black"
+      "image": "silkie-black",
+      "symbol": "SBLACK"
     },
     "silkie-blue-with-red-beard": {
       "displayName": "Silkie Blue With Red Beard",
       "rarity": "mil-spec",
-      "image": "silkie-blue-with-red-beard"
+      "image": "silkie-blue-with-red-beard",
+      "symbol": "SBWRB"
     },
     "silkie-brown-with-black-head": {
       "displayName": "Silkie Brown With Black Head",
       "rarity": "mil-spec",
-      "image": "silkie-brown-with-black-head"
+      "image": "silkie-brown-with-black-head",
+      "symbol": "SBWBH"
     },
     "silkie-brown": {
       "displayName": "Silkie Brown",
       "rarity": "mil-spec",
-      "image": "silkie-brown"
+      "image": "silkie-brown",
+      "symbol": "SBROWN"
     },
     "silkie-orange": {
       "displayName": "Silkie Orange",
       "rarity": "mil-spec",
-      "image": "silkie-orange"
+      "image": "silkie-orange",
+      "symbol": "SORANGE"
     },
     "silkie-purple": {
       "displayName": "Silkie Purple",
       "rarity": "mil-spec",
-      "image": "silkie-purple"
+      "image": "silkie-purple",
+      "symbol": "SPURPLE"
     },
     "silkie-red-beetle": {
       "displayName": "Silkie Red Beetle",
       "rarity": "mil-spec",
-      "image": "silkie-red-beetle"
+      "image": "silkie-red-beetle",
+      "symbol": "SRB"
     },
     "silkie-red": {
       "displayName": "Silkie Red",
       "rarity": "mil-spec",
-      "image": "silkie-red"
+      "image": "silkie-red",
+      "symbol": "SRED"
     },
     "silkie-splash": {
       "displayName": "Silkie Splash",
       "rarity": "mil-spec",
-      "image": "silkie-splash"
+      "image": "silkie-splash",
+      "symbol": "SSPLASH"
     },
     "silkie-tiger": {
       "displayName": "Silkie Tiger",
       "rarity": "mil-spec",
-      "image": "silkie-tiger"
+      "image": "silkie-tiger",
+      "symbol": "STIGER"
     },
     "silkie-white": {
       "displayName": "Silkie White",
       "rarity": "mil-spec",
-      "image": "silkie-white"
+      "image": "silkie-white",
+      "symbol": "SWHITE"
     }
   },
   "factoryStartBlock": 70332228,

@@ -488,6 +488,35 @@ test("unrelated creator launches are ignored before protocol configuration reads
   assert.deepEqual(readNames.sort(), ["name", "symbol"]);
 });
 
+test("factory discovery recognizes short variant tickers and rejects mismatched metadata", async () => {
+  const variant = config.variantMeta["silkie-brown-with-black-head"];
+  for (const [name, symbol, expected] of [
+    [variant.displayName, "SBWBH", 1],
+    [variant.displayName, "sbwbh", 1],
+    [variant.displayName, "silkie-brown-with-black-head", 0],
+    ["Silkie Brown", "SBWBH", 0],
+    [variant.displayName, "SBROWN", 0],
+  ] as const) {
+    const base = fixture().rpc;
+    const rpc = {
+      ...base,
+      getContractEvents: async () => [
+        log("TokenLaunched", { token: address }, 0),
+      ],
+      readContract: async (
+        request: Parameters<typeof base.readContract>[0],
+      ) => {
+        if (request.functionName === "name") return name;
+        if (request.functionName === "symbol") return symbol;
+        return base.readContract(request);
+      },
+    } as unknown as ReturnType<typeof client>;
+    const launches = await readTokenLaunches(rpc, 1n, 4n);
+    assert.equal(launches.length, expected);
+    if (expected) assert.equal(launches[0].address, address);
+  }
+});
+
 test("recognized variant and configured base launches still reject unsupported configuration", async () => {
   const variant = Object.entries(config.variantMeta)[0];
   for (const launchAddress of [address, config.tokens[0].address]) {
@@ -507,7 +536,7 @@ test("recognized variant and configured base launches still reject unsupported c
             ? variant[1].displayName
             : "Configured base";
         if (request.functionName === "symbol")
-          return launchAddress === address ? variant[0].toUpperCase() : "BASE";
+          return launchAddress === address ? variant[1].symbol : "BASE";
         if (request.functionName === "getLaunchedToken") {
           inspected = true;
           const launch = await base.readContract({

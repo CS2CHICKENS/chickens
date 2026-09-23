@@ -162,6 +162,8 @@ Rounds continue while eggs incubate. A hatch round reserves one remaining slot f
 
 After the hatch, the developer launches the new token on pons from the creator wallet. The site detects the launch on-chain and displays the official address automatically. **Never trust an address posted anywhere else first.**
 
+Each variant has a fixed full name and a short ticker in `config/config.json` (`variantMeta.displayName` and `variantMeta.symbol`). For example, Silkie Black uses SBLACK. Launch recognition checks both fields, ignoring letter case, against the revealed variant. Internal identifiers such as `silkie-black` remain unchanged for hatch proofs and asset references; they are not token tickers. A matching name or ticker alone does not establish an official token address.
+
 The hatch only decides _which chicken launches_. No money is ever distributed by chance.
 
 ## 10. Seasons

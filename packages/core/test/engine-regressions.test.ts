@@ -145,9 +145,21 @@ test("a registered variant cannot match a second launch after a fresh replay", (
   const name =
     config.variantMeta[h.variant as keyof typeof config.variantMeta]
       .displayName;
-  assert.equal(matchLaunch(name, h.variant!, state.hatches), h);
   assert.equal(
-    matchLaunch(name, h.variant!, state.hatches, [{ id: h.variant! }]),
+    matchLaunch(
+      name,
+      config.variantMeta[h.variant as keyof typeof config.variantMeta].symbol,
+      state.hatches,
+    ),
+    h,
+  );
+  assert.equal(
+    matchLaunch(
+      name,
+      config.variantMeta[h.variant as keyof typeof config.variantMeta].symbol,
+      state.hatches,
+      [{ id: h.variant! }],
+    ),
     null,
   );
 });

@@ -1,6 +1,6 @@
 import { run } from "./cli";
 import { reconstruct, roundArg } from "./history";
-import { hatch, firstBlockAt, json } from "../packages/core/src/index";
+import { config, hatch, firstBlockAt, json } from "../packages/core/src/index";
 
 async function main() {
   const round = roundArg(),
@@ -33,6 +33,14 @@ async function main() {
       sorted: proof.ids,
       index: proof.index,
       result: proof.variant,
+      launch: {
+        name: config.variantMeta[
+          proof.variant as keyof typeof config.variantMeta
+        ].displayName,
+        symbol:
+          config.variantMeta[proof.variant as keyof typeof config.variantMeta]
+            .symbol,
+      },
       tweet:
         proof.variant +
         " hatched in round " +

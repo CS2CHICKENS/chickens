@@ -112,6 +112,7 @@ export function Inventory({ family }: { family?: string }) {
                       ).toUpperCase()
                     : item.id.toUpperCase()}
                 </h2>
+                <span className="eyebrow">{base?.symbol ?? meta?.symbol}</span>
                 <Link
                   className="text-link token-details-link"
                   href={"/tokens/" + item.id}

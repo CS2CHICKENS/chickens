@@ -1,5 +1,6 @@
 import {
   config,
+  matchesVariant,
   bps,
   hatch,
   replayRounds,
@@ -112,10 +113,7 @@ export function matchLaunch(
       h.variant &&
       !registered.some((token) => token.id === h.variant) &&
       !h.tokenAddress &&
-      config.variantMeta[
-        h.variant as keyof typeof config.variantMeta
-      ]?.displayName.toLowerCase() === name.trim().toLowerCase() &&
-      symbol.toLowerCase() === h.variant,
+      matchesVariant(h.variant, name, symbol),
   );
   return matches.length === 1 ? matches[0] : null;
 }

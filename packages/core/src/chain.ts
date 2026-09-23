@@ -15,6 +15,7 @@ import {
 } from "viem";
 import {
   config,
+  matchesVariant,
   priceWei,
   abs,
   WAD,
@@ -337,10 +338,8 @@ export async function readTokenLaunches(rpc: Rpc, from: bigint, to: bigint) {
         config.tokens.some(
           (token) => token.address.toLowerCase() === address.toLowerCase(),
         ) ||
-        Object.entries(config.variantMeta).some(
-          ([id, metadata]) =>
-            id === symbol.toLowerCase() &&
-            metadata.displayName.toLowerCase() === name.trim().toLowerCase(),
+        Object.keys(config.variantMeta).some((id) =>
+          matchesVariant(id, name, symbol),
         );
       if (!recognized) return null;
       const quote = await tokenSnapshot(rpc, address);
