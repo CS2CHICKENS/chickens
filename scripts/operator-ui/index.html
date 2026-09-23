@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="operator-session" content="__SESSION__" />
+    <title>CS2 Chickens · Local settlement</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <p class="eyebrow">CS2 CHICKENS / LOCAL OPERATOR</p>
+      <h1>SETTLE THE ROUND.</h1>
+      <p>
+        Verify the chain, review the allocations, then approve each batch in
+        Rabby. Recipients and amounts are calculated automatically.
+      </p>
+      <section>
+        <h2>1 / CONNECT RABBY</h2>
+        <button id="connect">Connect Rabby</button>
+        <p id="account">No wallet connected.</p>
+        <p id="destinations"></p>
+      </section>
+      <section>
+        <h2>2 / CONTRACTS</h2>
+        <p>
+          Deploy the exact locally compiled Split and Multisend contracts.
+          Verified addresses are saved to the project configuration.
+        </p>
+        <button id="deploy">Review deployment</button>
+      </section>
+      <section>
+        <h2>3 / VERIFY A COMPLETED ROUND</h2>
+        <label
+          >Round number
+          <input id="round" type="number" min="1" step="1" value="1" /></label
+        ><button id="prepare">Recompute and verify</button>
+        <p>
+          Historical verification may take several minutes. The published plan
+          must match the independently reconstructed chain data.
+        </p>
+        <pre id="plan">No round verified.</pre>
+        <button id="settle" disabled>Start / resume settlement</button
+        ><button id="stop">Stop after current transaction</button>
+      </section>
+      <section id="review" hidden>
+        <h2>REVIEW TRANSACTION</h2>
+        <pre id="transaction"></pre>
+        <button id="approve">Request Rabby signature</button
+        ><button id="reject">Cancel this request</button>
+      </section>
+      <section aria-live="polite">
+        <h2>STATUS</h2>
+        <p id="status">Loading local configuration…</p>
+        <p id="cook-status"></p>
+      </section>
+      <section>
+        <h2>RECOVERY</h2>
+        <p>
+          Resume confirmed operations without paying twice. If the browser
+          closed after signing, enter the operation and transaction hash from
+          Rabby.
+        </p>
+        <label>Operation ID <input id="operation" autocomplete="off" /></label
+        ><label>Transaction hash <input id="hash" autocomplete="off" /></label
+        ><button id="recover">Verify saved transaction</button
+        ><button id="retry-failed">
+          Reset a confirmed reverted transaction
+        </button>
+        <pre id="operations"></pre>
+      </section>
+      <p class="muted">
+        Keep this local application open while processing. Connecting a wallet
+        does not move funds. Rabby confirms every transaction; no private key or
+        recovery phrase is requested.
+      </p>
+    </main>
+  </body>
+</html>
