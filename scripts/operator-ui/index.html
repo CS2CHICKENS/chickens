@@ -40,7 +40,29 @@
           Historical verification may take several minutes. The published plan
           must match the independently reconstructed chain data.
         </p>
-        <pre id="plan">No round verified.</pre>
+        <div id="budget" hidden aria-live="polite">
+          <h3 id="budget-title"></h3>
+          <p>
+            The verified round fixes these amounts. Extra ETH in Feed never
+            increases this allocation.
+          </p>
+          <dl id="budget-amounts"></dl>
+          <p>
+            Split separates the developer share before any holder payment.
+            Holder batches and cooks use only their verified amounts. Carried
+            rewards use funds reserved from earlier rounds. Gas is funded
+            separately.
+          </p>
+        </div>
+        <details>
+          <summary>Complete calculation and proof</summary>
+          <pre id="plan">No round verified.</pre>
+        </details>
+        <p class="muted">
+          Keep fee collection and distribution in this application. Unknown
+          manual claims or outgoing Feed transactions require reconciliation
+          before settlement can continue.
+        </p>
         <button id="settle" disabled>Start / resume settlement</button
         ><button id="stop">Stop after current transaction</button>
       </section>

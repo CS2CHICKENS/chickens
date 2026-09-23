@@ -88,6 +88,7 @@ test("gas requires a top-up above the full community reserve, including future c
     call: async () => ({}),
     estimateGas: async () => 1n,
     getBalance: async () => balance,
+    getCode: async () => undefined,
     readContract: async ({ functionName }: { functionName: string }) =>
       functionName === "released"
         ? true
@@ -98,6 +99,8 @@ test("gas requires a top-up above the full community reserve, including future c
   const service = new OperatorTransactions({ rpc, directory });
   service.verifiedContract = async () => address;
   service.prepared = {
+    manifest: { round: 1, cook: { egg: "240" } },
+    proof: hash,
     manifests: [
       { round: 1, creatorFeesWei: "200", potWei: "100", payouts: [] },
     ],

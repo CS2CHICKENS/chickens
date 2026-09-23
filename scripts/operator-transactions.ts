@@ -13,6 +13,7 @@ import {
   getContractAddress,
   keccak256,
   parseAbi,
+  stringToHex,
   toHex,
   type Address,
   type Hex,
@@ -27,7 +28,14 @@ import {
 import { nextCook, sweepAbi } from "./operator-cook";
 import { multisendAbi, splitAbi } from "../packages/core/src/contracts";
 import { payoutBatches } from "../packages/core/src/batches";
-import { prepareRound, type PreparedRound } from "./operator-plan";
+import { cookChunk } from "../packages/core/src/cook";
+import {
+  canonical,
+  financialManifest,
+  prepareRound,
+  type PreparedRound,
+} from "./operator-plan";
+import { verifyFeedFundingHistory } from "./operator-funding";
 
 export type Proposal = {
   id: string;
@@ -178,6 +186,7 @@ export class OperatorTransactions {
     if (!exclusive) await rename(target, path);
   }
   async prepare(round: number) {
+    this.prepared = undefined;
     const prepared = await prepareRound(round);
     this.prepared = prepared;
     await mkdir(this.directory, { recursive: true });
@@ -226,6 +235,7 @@ export class OperatorTransactions {
       "id" | "label" | "from" | "to" | "data" | "proof" | "deploy"
     > & { value: bigint; gasCap?: bigint },
   ): Promise<Proposal> {
+    this.assertRoundBudget(input);
     const existing = await this.read(input.id);
     if (existing) {
       if (existing.tx)
@@ -247,6 +257,7 @@ export class OperatorTransactions {
             pending.proposal.id,
         );
     }
+    const funding = await this.verifyFundingHistory();
     if ((await this.rpc.getChainId()) !== config.chainId)
       throw Error("RPC chain mismatch");
     const [latest, pending, block] = await Promise.all([
@@ -259,6 +270,13 @@ export class OperatorTransactions {
     ]);
     if (latest !== pending)
       throw Error("Wait for pending transactions in the signing account");
+    if (
+      input.from.toLowerCase() === feed().toLowerCase() &&
+      latest !== funding.nonce
+    )
+      throw Error(
+        "Feed history changed during preparation; reconcile its receipts and prepare again",
+      );
     const request = {
       account: input.from,
       to: input.to,
@@ -303,6 +321,101 @@ export class OperatorTransactions {
     };
     await this.save({ proposal }, true);
     return proposal;
+  }
+  private assertRoundBudget(input: {
+    id: string;
+    from: Address;
+    to?: Address;
+    data: Hex;
+    value: bigint;
+    proof: string;
+  }) {
+    const match = /^round-(\d+)-(.+)$/.exec(input.id);
+    if (!match) return;
+    const plan = this.prepared;
+    if (
+      !plan ||
+      Number(match[1]) !== plan.manifest.round ||
+      input.proof !== plan.proof
+    )
+      throw Error("Transaction does not belong to the prepared round budget");
+    const manifest = plan.manifest,
+      action = match[2],
+      gross = BigInt(manifest.creatorFeesWei ?? "0");
+    if (manifest.creatorFeesWei === null)
+      throw Error("Gross fees are unverified");
+    if (
+      input.from.toLowerCase() !== feed().toLowerCase() &&
+      (!action.startsWith("sweep-") ||
+        input.from.toLowerCase() !== config.wallets.creator?.toLowerCase())
+    )
+      throw Error(
+        "Transaction signer does not match the prepared round workflow",
+      );
+    let amount: bigint | undefined,
+      data: Hex | undefined,
+      destination: string | null | undefined;
+    if (action === "claim") {
+      amount = 0n;
+      destination = config.protocol.feeEscrow;
+      data = encodeFunctionData({
+        abi: escrow,
+        functionName: "claim",
+        args: [gross],
+      });
+    } else if (action === "split") {
+      amount = gross;
+      destination = config.wallets.split;
+      data = encodeFunctionData({
+        abi: splitAbi,
+        functionName: "releaseRound",
+        args: [BigInt(manifest.round)],
+      });
+    } else if (action.startsWith("batch-")) {
+      const batch = payoutBatches(manifest.payouts).find(
+        (entry) => entry.index === Number(action.slice(6)),
+      );
+      if (!batch)
+        throw Error("Unknown holder batch in the prepared round budget");
+      amount = batch.value;
+      destination = config.wallets.multisend;
+      data = encodeFunctionData({
+        abi: multisendAbi,
+        functionName: "sendEth",
+        args: [
+          BigInt(manifest.round),
+          manifest.hash,
+          BigInt(batch.index),
+          batch.to,
+          batch.amounts,
+        ],
+      });
+    } else if (action.startsWith("sweep-") || action.endsWith("-burn")) {
+      amount = 0n;
+    } else {
+      const cook = /^cook-(.+)-(\d+)-(\d+)-buy$/.exec(action);
+      if (!cook || manifest.cook[cook[1]] === undefined)
+        throw Error("Unknown cook in the prepared round budget");
+      const index = Number(cook[2]);
+      if (
+        !Number.isSafeInteger(index) ||
+        index < 0 ||
+        index >= config.cook.chunks ||
+        input.value <= 0n ||
+        input.value >
+          cookChunk(BigInt(manifest.cook[cook[1]]), index, config.cook.chunks)
+      )
+        throw Error("Cook exceeds its fixed round allocation");
+    }
+    if (
+      (amount !== undefined && input.value !== amount) ||
+      (data !== undefined && input.data.toLowerCase() !== data.toLowerCase()) ||
+      (destination !== undefined &&
+        input.to?.toLowerCase() !== destination?.toLowerCase())
+    )
+      throw Error(
+        "Transaction exceeds or differs from the fixed round allocation",
+      );
   }
   async communityReserve() {
     if (!this.prepared) return 0n;
@@ -401,6 +514,17 @@ export class OperatorTransactions {
       throw Error("Settlement journal exceeds verified funding");
     return reserve;
   }
+  async verifyFundingHistory() {
+    return verifyFeedFundingHistory({
+      rpc: this.rpc,
+      directory: this.directory,
+      feed: feed(),
+      chainId: config.chainId,
+      confirmations: config.confirmations,
+      preparedRound: this.prepared?.manifest.round,
+      matches: sameTransaction,
+    });
+  }
   async nextDeployment() {
     for (const name of ["Split", "Multisend"] as const) {
       const key = name === "Split" ? "split" : "multisend";
@@ -436,6 +560,7 @@ export class OperatorTransactions {
   async nextSettlement() {
     const plan = this.prepared;
     if (!plan) throw Error("Prepare and verify the round first");
+    await this.verifyFundingHistory();
     const m = plan.manifest,
       round = BigInt(m.round),
       prefix = "round-" + round;
@@ -469,6 +594,7 @@ export class OperatorTransactions {
           }))
         )
           throw Error("Complete earlier holder distributions first");
+      await this.verifyEarlierCooks(plan, earlier);
     }
     if (m.creatorFeesWei === null) throw Error("Gross fees are unverified");
     const gross = BigInt(m.creatorFeesWei);
@@ -651,6 +777,55 @@ export class OperatorTransactions {
       });
     }
     return nextCook(this);
+  }
+  private async verifyEarlierCooks(
+    plan: PreparedRound,
+    manifest: PreparedRound["manifest"],
+  ) {
+    const pending = () =>
+      Error(
+        "Complete and verify earlier cooks before starting another round allocation",
+      );
+    if (!Object.values(manifest.cook).some((value) => BigInt(value) > 0n))
+      return;
+    for (const [token, value] of Object.entries(manifest.cook))
+      for (let index = 0; index < config.cook.chunks; index++) {
+        if (cookChunk(BigInt(value), index, config.cook.chunks) === 0n)
+          continue;
+        const prefix = `round-${manifest.round}-cook-${token}-${index}-0`;
+        const [buy, burn] = await Promise.all([
+          this.read(prefix + "-buy"),
+          this.read(prefix + "-burn"),
+        ]);
+        if (!buy?.tx || !burn?.tx) throw pending();
+      }
+    const manifests = plan.manifests.filter(
+      (entry) => entry.round <= manifest.round,
+    );
+    const endHash = (
+      await this.rpc.getBlock({ blockNumber: BigInt(manifest.endBlock) })
+    ).hash;
+    const previous = Object.create(this) as OperatorTransactions;
+    previous.prepared = {
+      ...plan,
+      manifest,
+      manifests,
+      endHash,
+      proof: keccak256(
+        stringToHex(
+          canonical({
+            manifests: manifests.map(financialManifest),
+            endHash,
+            wallets: config.wallets,
+            chainId: config.chainId,
+          }),
+        ),
+      ),
+    };
+    previous.proposal = async () => {
+      throw pending();
+    };
+    if ((await nextCook(previous)) !== null) throw pending();
   }
   async confirm(id: string, tx: Hex) {
     const journal = await this.read(id);

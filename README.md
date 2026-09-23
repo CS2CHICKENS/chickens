@@ -28,7 +28,7 @@ The static export is written to `apps/web/.next-build`. The frontend reads cache
 
 ## Verification
 
-All monetary arithmetic uses integers in `packages/core`. Pons v2 curve prices use tradeable reserves; graduated pools use Uniswap v4 slot data. The pot is half of verified creator fees recognized in ETH during the round, with protocol rounding preserved. Token-denominated fees enter the pot when their conversion is proven on chain. EGG and CHICK contribute fees but their volume does not count toward the family threshold. See the [fee recognition rules](docs/whitepaper.md#5-fees-and-the-feed).
+All monetary arithmetic uses integers in `packages/core`. Pons v2 curve prices use tradeable reserves; graduated pools use Uniswap v4 slot data. The pot is half of verified creator fees recognized in ETH during the round, with protocol rounding preserved. Round 1 also receives verified official-token fees reserved before its first family trade. Token-denominated fees enter the pot when their conversion is proven on chain. EGG and CHICK contribute fees but their volume does not count toward the family threshold. FEED shows indexed volume and creator fees by token. See the [fee recognition rules](docs/whitepaper.md#5-fees-and-the-feed).
 
 The hatch uses the first block at or after the incubation deadline:
 
@@ -52,6 +52,8 @@ Payout hashes use Keccak-256 of UTF-8 JSON containing the round number and posit
 Settlement commands verify or prepare plans by default. Use `npm run operator` for the local Rabby application at http://127.0.0.1:8788. It deploys and verifies the settlement contracts, independently recomputes published round manifests, and prepares sweep, claim, split, holder batches, purchases and burns. Every transaction requires confirmation in Rabby; the server never receives a signing key. The older command-line `--execute` flag remains disabled. The developer receiving address does not sign holder payouts. Public developer fee reporting counts project payments and does not follow subsequent personal transfers.
 
 Keep `private/operator-runs` when restarting: it links every proposed operation to its confirmed transaction and prevents accidental resubmission. Unknown submissions require receipt reconciliation; a confirmed revert can be reset and simulated again. Reporting requires `ADMIN_URL` (the HTTPS Worker origin) and `ADMIN_SECRET` in the local process environment. A reporting failure resumes from the saved payment instead of paying twice. Pons can reserve some fee conversions for its own sweep operator; the local application cannot bypass that role.
+
+Each settlement uses a fixed, independently verified round budget. Extra ETH in Feed never increases a claim, holder batch or cook allocation. Split allocates the developer share before community spending; gas must be funded separately. Complete each round's holder payments and cooks before starting the next settlement. The application verifies every Feed transaction against its saved operation and canonical receipt, including failed transactions. Manual claims, developer transfers or other unrecorded outgoing transactions stop the workflow until reconciled; a larger wallet balance does not override this check. Keep Feed as an undelegated wallet dedicated to this workflow and preserve the local journals.
 
 ## Components
 

@@ -110,16 +110,27 @@ export function createOperatorServer(
           mode?: string;
           id?: string;
           tx?: string;
+          proof?: string;
         };
         if (path === "/api/prepare")
           return reply(200, await service.prepare(Number(input.round)));
-        if (path === "/api/next")
+        if (path === "/api/next") {
+          if (
+            input.mode !== "deploy" &&
+            (!service.prepared ||
+              input.round !== service.prepared.manifest.round ||
+              input.proof !== service.prepared.proof)
+          )
+            throw Error(
+              "Recompute and verify the selected round before settlement.",
+            );
           return reply(200, {
             proposal:
               input.mode === "deploy"
                 ? await service.nextDeployment()
                 : await service.nextSettlement(),
           });
+        }
         if (
           path === "/api/confirm" &&
           input.id &&
