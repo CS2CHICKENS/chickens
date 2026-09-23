@@ -10,9 +10,9 @@
     "creator": "0xF4f77f8C93b545a0C9364E9ef5F5E6fcEFB3D4E9",
     "dev": "0x3b6c23AE79689303fE29167c4f3b89BAA4D0A5C1",
     "feed": "0x9C05Be9E7017f369169E57E2e0680ca3Ec8a871F",
-    "split": null,
+    "split": "0x8554b52F37af6B2b748ECB782cc818DE04faB224",
     "burn": "0x000000000000000000000000000000000000dEaD",
-    "multisend": null
+    "multisend": "0xB6e619a5689345318CF907de167fcC2F8f707188"
   },
   "fees": {
     "feedShareOfCreatorFee": 0.5,
