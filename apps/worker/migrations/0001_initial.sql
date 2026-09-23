@@ -1,0 +1,17 @@
+CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
+CREATE TABLE blocks (number INTEGER PRIMARY KEY, ts INTEGER NOT NULL, hash TEXT NOT NULL);
+CREATE TABLE tokens (address TEXT PRIMARY KEY, id TEXT UNIQUE NOT NULL, family TEXT, role TEXT NOT NULL, pool TEXT NOT NULL, isToken0 INTEGER NOT NULL, launchBlock INTEGER NOT NULL);
+CREATE TABLE swaps (id TEXT PRIMARY KEY, token TEXT NOT NULL, family TEXT, block INTEGER NOT NULL, logIndex INTEGER NOT NULL, ts INTEGER NOT NULL, volume TEXT NOT NULL, side TEXT NOT NULL, wallet TEXT NOT NULL, tx TEXT NOT NULL);
+CREATE INDEX swaps_block ON swaps(block,logIndex);
+CREATE TABLE swaps_agg (round INTEGER NOT NULL, token TEXT NOT NULL, volumeEth TEXT NOT NULL, buys INTEGER NOT NULL, sells INTEGER NOT NULL, PRIMARY KEY(round,token));
+CREATE TABLE balance_events (id TEXT PRIMARY KEY, token TEXT NOT NULL, wallet TEXT NOT NULL, block INTEGER NOT NULL, logIndex INTEGER NOT NULL, ts INTEGER NOT NULL, delta TEXT NOT NULL);
+CREATE INDEX balance_wallet ON balance_events(wallet,token,block,logIndex);
+CREATE TABLE rounds (id INTEGER PRIMARY KEY, startBlock INTEGER NOT NULL, endBlock INTEGER NOT NULL, threshold TEXT NOT NULL, winner TEXT, status TEXT NOT NULL, pot TEXT NOT NULL, endReason TEXT NOT NULL, data TEXT NOT NULL);
+CREATE TABLE hatches (round INTEGER PRIMARY KEY, family TEXT NOT NULL, hatchAt INTEGER NOT NULL, block INTEGER, hash TEXT, variant TEXT, tokenAddress TEXT, remaining TEXT NOT NULL);
+CREATE TABLE payouts (round INTEGER NOT NULL, wallet TEXT NOT NULL, category TEXT NOT NULL, amountWei TEXT NOT NULL, status TEXT NOT NULL, tx TEXT, PRIMARY KEY(round,wallet,category));
+CREATE TABLE carryover (wallet TEXT NOT NULL, round INTEGER NOT NULL, category TEXT NOT NULL, amountWei TEXT NOT NULL, PRIMARY KEY(wallet,round,category));
+CREATE TABLE cooks (round INTEGER NOT NULL, token TEXT NOT NULL, ethIn TEXT NOT NULL, tokensBurned TEXT NOT NULL, tx TEXT PRIMARY KEY);
+CREATE TABLE alerts (id TEXT PRIMARY KEY, ts INTEGER NOT NULL, level TEXT NOT NULL, message TEXT NOT NULL);
+CREATE TABLE outbox (id TEXT PRIMARY KEY, message TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'pending');
+CREATE TABLE launches (address TEXT PRIMARY KEY, block INTEGER NOT NULL, name TEXT NOT NULL, symbol TEXT NOT NULL, pool TEXT NOT NULL, isToken0 INTEGER NOT NULL);
+CREATE TABLE manifests (round INTEGER PRIMARY KEY, hash TEXT NOT NULL, data TEXT NOT NULL);

@@ -1,0 +1,1 @@
+CREATE TABLE work_jobs(kind TEXT PRIMARY KEY, token TEXT NOT NULL, sentAt INTEGER NOT NULL);

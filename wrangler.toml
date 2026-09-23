@@ -1,0 +1,37 @@
+name = "chickens-engine"
+main = "apps/worker/src/index.ts"
+compatibility_date = "2026-09-01"
+workers_dev = false
+routes = [{ pattern = "engine.cs2chickens.fun", custom_domain = true }]
+
+[limits]
+cpu_ms = 30000
+subrequests = 10000
+
+[triggers]
+crons = ["* * * * *"]
+
+[vars]
+ENVIRONMENT = "production"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "coop"
+database_id = "cdd94288-e1dd-4879-bf83-10b910306f0a"
+migrations_dir = "apps/worker/migrations"
+
+[[r2_buckets]]
+binding = "DATA"
+bucket_name = "coop-data"
+
+[[queues.producers]]
+binding = "WORK"
+queue = "coop-work"
+
+[[queues.consumers]]
+queue = "coop-work"
+max_batch_size = 1
+max_batch_timeout = 0
+max_concurrency = 1
+max_retries = 10
+dead_letter_queue = "coop-work-failed"

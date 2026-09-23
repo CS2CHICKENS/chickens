@@ -1,0 +1,2 @@
+CREATE TABLE payout_receipts(tx TEXT PRIMARY KEY, round INTEGER NOT NULL, batchHash TEXT NOT NULL, block INTEGER NOT NULL, gasWei TEXT NOT NULL, UNIQUE(round,batchHash));
+CREATE TABLE split_releases(id TEXT PRIMARY KEY, block INTEGER NOT NULL, devWei TEXT NOT NULL, feedWei TEXT NOT NULL);

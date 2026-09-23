@@ -1,0 +1,18 @@
+ALTER TABLE swaps ADD COLUMN creatorFeeWei TEXT;
+ALTER TABLE swaps ADD COLUMN feeVerified INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE swaps ADD COLUMN kind TEXT NOT NULL DEFAULT 'trade';
+ALTER TABLE balance_events ADD COLUMN applied INTEGER NOT NULL DEFAULT 0;
+CREATE INDEX balance_unapplied ON balance_events(applied,block,logIndex);
+CREATE INDEX balance_block ON balance_events(block,logIndex);
+ALTER TABLE tokens ADD COLUMN curve TEXT;
+ALTER TABLE tokens ADD COLUMN phase INTEGER;
+ALTER TABLE tokens ADD COLUMN poolId TEXT;
+CREATE TABLE current_balances(token TEXT NOT NULL,wallet TEXT NOT NULL,balanceWei TEXT NOT NULL,PRIMARY KEY(token,wallet));
+CREATE INDEX current_wallet ON current_balances(wallet,token);
+CREATE TABLE wallet_dirty(wallet TEXT PRIMARY KEY);
+CREATE TABLE data_publications(key TEXT PRIMARY KEY,value TEXT NOT NULL);
+CREATE TABLE settlement_jobs(round INTEGER PRIMARY KEY,walletCursor TEXT NOT NULL DEFAULT '',prices TEXT NOT NULL,gasWei TEXT NOT NULL,data TEXT,writeOffset INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE round_weights(round INTEGER NOT NULL,wallet TEXT NOT NULL,familyWei TEXT NOT NULL,chickWei TEXT NOT NULL,streak INTEGER NOT NULL,PRIMARY KEY(round,wallet));
+CREATE TABLE round_balances(round INTEGER NOT NULL,token TEXT NOT NULL,wallet TEXT NOT NULL,balanceWei TEXT NOT NULL,PRIMARY KEY(round,token,wallet));
+CREATE TABLE planned_carry(settlementRound INTEGER NOT NULL,wallet TEXT NOT NULL,round INTEGER NOT NULL,category TEXT NOT NULL,amountWei TEXT NOT NULL,PRIMARY KEY(settlementRound,wallet,round,category));
+CREATE TABLE cook_receipts(round INTEGER NOT NULL,token TEXT NOT NULL,buyTx TEXT NOT NULL,burnTx TEXT NOT NULL,ethIn TEXT NOT NULL,tokensBurned TEXT NOT NULL,block INTEGER NOT NULL,PRIMARY KEY(burnTx,token),UNIQUE(buyTx,token));
