@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { mkdtemp, rm } from "node:fs/promises";
 import { join } from "node:path";
+import { tmpdir } from "node:os";
 import { request } from "node:http";
 import { config } from "../../packages/core/src/index";
 import {
@@ -50,7 +51,7 @@ test("receipt recovery binds every transaction field and never accepts another r
     assert.equal(sameTransaction(p, { ...tx, ...change }), false);
 });
 test("confirmed reverts can reset; successful and unknown submissions cannot", async () => {
-  const directory = await mkdtemp("private/operator-test-");
+  const directory = await mkdtemp(join(tmpdir(), "chickens-operator-test-"));
   let reverted = true;
   const rpc = {
     getTransaction: async () => tx,
@@ -78,7 +79,7 @@ test("confirmed reverts can reset; successful and unknown submissions cannot", a
   }
 });
 test("gas requires a top-up above the full community reserve, including future cooks and carry", async () => {
-  const directory = await mkdtemp("private/operator-test-");
+  const directory = await mkdtemp(join(tmpdir(), "chickens-operator-test-"));
   let balance = 100n;
   const rpc = {
     getChainId: async () => 4663,
@@ -124,7 +125,7 @@ test("gas requires a top-up above the full community reserve, including future c
   }
 });
 test("local operator rejects foreign origins, host rebinding, missing sessions and oversized requests", async () => {
-  const directory = await mkdtemp("private/operator-test-");
+  const directory = await mkdtemp(join(tmpdir(), "chickens-operator-test-"));
   const service = new OperatorTransactions({ directory });
   const port = 18788,
     origin = "http://127.0.0.1:" + port,
