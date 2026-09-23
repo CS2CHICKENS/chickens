@@ -140,6 +140,33 @@ const blockedHistory = [
   ],
   ["cook", "INSERT INTO cooks VALUES(1,'egg','1','1','tx')"],
 ];
+test("adoption does not depend on a seven-term compound SELECT", async () => {
+  for (const [label, insert] of [["empty", ""], ...blockedHistory]) {
+    const f = await legacyWaiting();
+    const originalPrepare = f.env.DB.prepare.bind(f.env.DB);
+    f.env.DB.prepare = (query: string) => {
+      if ((query.match(/\b(?:UNION|INTERSECT|EXCEPT)\b/gi)?.length ?? 0) >= 6)
+        throw Error(
+          "too many terms in compound SELECT: SQLITE_ERROR [code7500]",
+        );
+      return originalPrepare(query);
+    };
+    try {
+      if (insert) f.sql.exec(insert);
+      const result = await adopt(f);
+      assert.equal(result.accepted, !insert, label);
+      assert.equal(await meta(f.env.DB, "cursor"), String(start + 10));
+      assert.equal(
+        await meta(f.env.DB, "rulesFingerprint"),
+        rulesFingerprint(!!insert),
+        label,
+      );
+    } finally {
+      f.sql.close();
+    }
+  }
+});
+
 for (const [label, query] of blockedHistory) {
   test("legacy adoption refuses existing " + label + " history", async () => {
     const f = await legacyWaiting();

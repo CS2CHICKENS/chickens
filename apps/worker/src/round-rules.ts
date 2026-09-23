@@ -51,7 +51,7 @@ export async function acceptRoundRules(
   )
     return { accepted: false, active };
   const history = await env.DB.prepare(
-    "SELECT 1 FROM rounds UNION ALL SELECT 1 FROM manifests UNION ALL SELECT 1 FROM payouts UNION ALL SELECT 1 FROM carryover UNION ALL SELECT 1 FROM split_releases UNION ALL SELECT 1 FROM payout_receipts UNION ALL SELECT 1 FROM cooks LIMIT 1",
+    "SELECT 1 AS present WHERE EXISTS(SELECT 1 FROM rounds) OR EXISTS(SELECT 1 FROM manifests) OR EXISTS(SELECT 1 FROM payouts) OR EXISTS(SELECT 1 FROM carryover) OR EXISTS(SELECT 1 FROM split_releases) OR EXISTS(SELECT 1 FROM payout_receipts) OR EXISTS(SELECT 1 FROM cooks)",
   ).first();
   const firstTrade = await env.DB.prepare(
     "SELECT id FROM swaps WHERE block<=? AND family IS NOT NULL AND kind='trade' AND volume<>'0' AND feeVerified=1 LIMIT 1",
