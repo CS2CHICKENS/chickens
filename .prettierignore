@@ -1,0 +1,7 @@
+private/
+node_modules/
+.next/
+.next-build/
+out/
+public/img/
+package-lock.json

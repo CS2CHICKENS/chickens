@@ -1,0 +1,408 @@
+{
+  "chainId": 4663,
+  "rpc": [
+    "https://robinhood.drpc.org",
+    "https://rpc.mainnet.chain.robinhood.com"
+  ],
+  "factory": "0x7eD598BcEf8bd9Edd8C97A195C6d13f40801EC7e",
+  "weth": "0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73",
+  "wallets": {
+    "creator": "0xF4f77f8C93b545a0C9364E9ef5F5E6fcEFB3D4E9",
+    "dev": "0x3b6c23AE79689303fE29167c4f3b89BAA4D0A5C1",
+    "feed": "0x9C05Be9E7017f369169E57E2e0680ca3Ec8a871F",
+    "split": null,
+    "burn": "0x000000000000000000000000000000000000dEaD",
+    "multisend": null
+  },
+  "fees": {
+    "feedShareOfCreatorFee": 0.5,
+    "collectionWallet": "0x9C05Be9E7017f369169E57E2e0680ca3Ec8a871F"
+  },
+  "round": {
+    "startBlock": null,
+    "firstThresholdEth": "100",
+    "startMode": "first-family-trade",
+    "firstRoundTimeout": false,
+    "thresholdProgression": "launched-variants",
+    "thresholdGrowth": 0.1,
+    "minDurationSec": 0,
+    "timeoutSec": 259200,
+    "incubationSec": 36000
+  },
+  "split": {
+    "hatch": {
+      "family": 0.6,
+      "eggCook": 0.3,
+      "chick": 0.1
+    },
+    "fire": {
+      "familyBurn": 0.4,
+      "eggCook": 0.3,
+      "volumeBurn": 0.3,
+      "minVolumeShare": 0.01
+    }
+  },
+  "payouts": {
+    "gasBudgetShare": 0.03,
+    "carryoverRounds": 3,
+    "chickStreakStep": 0.5,
+    "chickStreakCap": 3,
+    "gasBaseFeeMultiplier": 2,
+    "gasPriorityFeeWei": "1000000",
+    "gasUnitsPerRecipient": 40000
+  },
+  "cook": {
+    "chunks": 8,
+    "spreadMinutes": 60,
+    "maxSlippageBps": 200
+  },
+  "testMode": false,
+  "seasons": [
+    {
+      "id": 1,
+      "name": "Season 1"
+    }
+  ],
+  "tokens": [
+    {
+      "id": "egg",
+      "symbol": "EGG",
+      "role": "egg",
+      "address": "0xC096A06220CE42eE949c059Ab898bcEcae936ad4",
+      "image": "egg"
+    },
+    {
+      "id": "chick",
+      "symbol": "CHICK",
+      "role": "chick",
+      "address": "0x49ABc5C8541ef0d2188C3b4fe51e969fC8d4D3dc",
+      "image": "chick"
+    },
+    {
+      "id": "catalana",
+      "symbol": "CATALANA",
+      "role": "default",
+      "family": "catalana",
+      "address": "0x980b23Ef548A20f7c5FDeaD85bdA2566512A442f",
+      "image": "catalana"
+    },
+    {
+      "id": "polish",
+      "symbol": "POLISH",
+      "role": "default",
+      "family": "polish",
+      "address": "0x1F563Fc8C7E926cA8552766468d75302398380EA",
+      "image": "polish"
+    },
+    {
+      "id": "silkie",
+      "symbol": "SILKIE",
+      "role": "default",
+      "family": "silkie",
+      "address": "0x68F6f732a564A9523A69830d60b11D8c52C53Bb4",
+      "image": "silkie"
+    }
+  ],
+  "families": [
+    {
+      "id": "catalana",
+      "name": "Catalana",
+      "season": 1,
+      "variants": [
+        "catalana-black-white-head",
+        "catalana-black-with-red-head",
+        "catalana-black",
+        "catalana-blue-and-light-orange",
+        "catalana-blue",
+        "catalana-dark-orange",
+        "catalana-grey",
+        "catalana-light-blue-and-red",
+        "catalana-orange-blue-neck",
+        "catalana-red-yellow-gradient",
+        "catalana-tan",
+        "catalana-white-tan-head",
+        "catalana-white",
+        "catalana-yellow-and-red",
+        "catalana-yellow-red-gradient"
+      ]
+    },
+    {
+      "id": "polish",
+      "name": "Polish",
+      "season": 1,
+      "variants": [
+        "polish-black-with-white-head",
+        "polish-blue-yellow",
+        "polish-blue",
+        "polish-brown-with-black-wing-tips",
+        "polish-brown",
+        "polish-green-with-red-head",
+        "polish-green",
+        "polish-orange-white-blue",
+        "polish-orange-with-black-stripes",
+        "polish-pink",
+        "polish-red",
+        "polish-white-black-head",
+        "polish-white-with-black-wing-tips"
+      ]
+    },
+    {
+      "id": "silkie",
+      "name": "Silkie",
+      "season": 1,
+      "variants": [
+        "silkie-aqua-with-yellow",
+        "silkie-black",
+        "silkie-blue-with-red-beard",
+        "silkie-brown-with-black-head",
+        "silkie-brown",
+        "silkie-leopard",
+        "silkie-orange",
+        "silkie-purple",
+        "silkie-red-beetle",
+        "silkie-red",
+        "silkie-splash",
+        "silkie-tiger",
+        "silkie-white"
+      ]
+    }
+  ],
+  "variantMeta": {
+    "silkie-leopard": {
+      "displayName": "Silkie Leopard",
+      "rarity": "covert",
+      "image": "silkie-leopard"
+    },
+    "catalana-black-white-head": {
+      "displayName": "Catalana Black White Head",
+      "rarity": "mil-spec",
+      "image": "catalana-black-white-head"
+    },
+    "catalana-black-with-red-head": {
+      "displayName": "Catalana Black With Red Head",
+      "rarity": "mil-spec",
+      "image": "catalana-black-with-red-head"
+    },
+    "catalana-black": {
+      "displayName": "Catalana Black",
+      "rarity": "mil-spec",
+      "image": "catalana-black"
+    },
+    "catalana-blue-and-light-orange": {
+      "displayName": "Catalana Blue And Light Orange",
+      "rarity": "mil-spec",
+      "image": "catalana-blue-and-light-orange"
+    },
+    "catalana-blue": {
+      "displayName": "Catalana Blue",
+      "rarity": "mil-spec",
+      "image": "catalana-blue"
+    },
+    "catalana-dark-orange": {
+      "displayName": "Catalana Dark Orange",
+      "rarity": "mil-spec",
+      "image": "catalana-dark-orange"
+    },
+    "catalana-grey": {
+      "displayName": "Catalana Grey",
+      "rarity": "mil-spec",
+      "image": "catalana-grey"
+    },
+    "catalana-light-blue-and-red": {
+      "displayName": "Catalana Light Blue And Red",
+      "rarity": "mil-spec",
+      "image": "catalana-light-blue-and-red"
+    },
+    "catalana-orange-blue-neck": {
+      "displayName": "Catalana Orange Blue Neck",
+      "rarity": "mil-spec",
+      "image": "catalana-orange-blue-neck"
+    },
+    "catalana-red-yellow-gradient": {
+      "displayName": "Catalana Red Yellow Gradient",
+      "rarity": "mil-spec",
+      "image": "catalana-red-yellow-gradient"
+    },
+    "catalana-tan": {
+      "displayName": "Catalana Tan",
+      "rarity": "mil-spec",
+      "image": "catalana-tan"
+    },
+    "catalana-white-tan-head": {
+      "displayName": "Catalana White Tan Head",
+      "rarity": "mil-spec",
+      "image": "catalana-white-tan-head"
+    },
+    "catalana-white": {
+      "displayName": "Catalana White",
+      "rarity": "mil-spec",
+      "image": "catalana-white"
+    },
+    "catalana-yellow-and-red": {
+      "displayName": "Catalana Yellow And Red",
+      "rarity": "mil-spec",
+      "image": "catalana-yellow-and-red"
+    },
+    "catalana-yellow-red-gradient": {
+      "displayName": "Catalana Yellow Red Gradient",
+      "rarity": "mil-spec",
+      "image": "catalana-yellow-red-gradient"
+    },
+    "polish-black-with-white-head": {
+      "displayName": "Polish Black With White Head",
+      "rarity": "mil-spec",
+      "image": "polish-black-with-white-head"
+    },
+    "polish-blue-yellow": {
+      "displayName": "Polish Blue Yellow",
+      "rarity": "mil-spec",
+      "image": "polish-blue-yellow"
+    },
+    "polish-blue": {
+      "displayName": "Polish Blue",
+      "rarity": "mil-spec",
+      "image": "polish-blue"
+    },
+    "polish-brown-with-black-wing-tips": {
+      "displayName": "Polish Brown With Black Wing Tips",
+      "rarity": "mil-spec",
+      "image": "polish-brown-with-black-wing-tips"
+    },
+    "polish-brown": {
+      "displayName": "Polish Brown",
+      "rarity": "mil-spec",
+      "image": "polish-brown"
+    },
+    "polish-green-with-red-head": {
+      "displayName": "Polish Green With Red Head",
+      "rarity": "mil-spec",
+      "image": "polish-green-with-red-head"
+    },
+    "polish-green": {
+      "displayName": "Polish Green",
+      "rarity": "mil-spec",
+      "image": "polish-green"
+    },
+    "polish-orange-white-blue": {
+      "displayName": "Polish Orange White Blue",
+      "rarity": "mil-spec",
+      "image": "polish-orange-white-blue"
+    },
+    "polish-orange-with-black-stripes": {
+      "displayName": "Polish Orange With Black Stripes",
+      "rarity": "mil-spec",
+      "image": "polish-orange-with-black-stripes"
+    },
+    "polish-pink": {
+      "displayName": "Polish Pink",
+      "rarity": "mil-spec",
+      "image": "polish-pink"
+    },
+    "polish-red": {
+      "displayName": "Polish Red",
+      "rarity": "mil-spec",
+      "image": "polish-red"
+    },
+    "polish-white-black-head": {
+      "displayName": "Polish White Black Head",
+      "rarity": "mil-spec",
+      "image": "polish-white-black-head"
+    },
+    "polish-white-with-black-wing-tips": {
+      "displayName": "Polish White With Black Wing Tips",
+      "rarity": "mil-spec",
+      "image": "polish-white-with-black-wing-tips"
+    },
+    "silkie-aqua-with-yellow": {
+      "displayName": "Silkie Aqua With Yellow",
+      "rarity": "mil-spec",
+      "image": "silkie-aqua-with-yellow"
+    },
+    "silkie-black": {
+      "displayName": "Silkie Black",
+      "rarity": "mil-spec",
+      "image": "silkie-black"
+    },
+    "silkie-blue-with-red-beard": {
+      "displayName": "Silkie Blue With Red Beard",
+      "rarity": "mil-spec",
+      "image": "silkie-blue-with-red-beard"
+    },
+    "silkie-brown-with-black-head": {
+      "displayName": "Silkie Brown With Black Head",
+      "rarity": "mil-spec",
+      "image": "silkie-brown-with-black-head"
+    },
+    "silkie-brown": {
+      "displayName": "Silkie Brown",
+      "rarity": "mil-spec",
+      "image": "silkie-brown"
+    },
+    "silkie-orange": {
+      "displayName": "Silkie Orange",
+      "rarity": "mil-spec",
+      "image": "silkie-orange"
+    },
+    "silkie-purple": {
+      "displayName": "Silkie Purple",
+      "rarity": "mil-spec",
+      "image": "silkie-purple"
+    },
+    "silkie-red-beetle": {
+      "displayName": "Silkie Red Beetle",
+      "rarity": "mil-spec",
+      "image": "silkie-red-beetle"
+    },
+    "silkie-red": {
+      "displayName": "Silkie Red",
+      "rarity": "mil-spec",
+      "image": "silkie-red"
+    },
+    "silkie-splash": {
+      "displayName": "Silkie Splash",
+      "rarity": "mil-spec",
+      "image": "silkie-splash"
+    },
+    "silkie-tiger": {
+      "displayName": "Silkie Tiger",
+      "rarity": "mil-spec",
+      "image": "silkie-tiger"
+    },
+    "silkie-white": {
+      "displayName": "Silkie White",
+      "rarity": "mil-spec",
+      "image": "silkie-white"
+    }
+  },
+  "factoryStartBlock": 70332228,
+  "confirmations": 12,
+  "socials": {
+    "x": "https://x.com/CS2Chickens"
+  },
+  "backupDomain": null,
+  "rules": {
+    "earlyThreshold": "first-eligible-swap",
+    "tieBreak": "ascii",
+    "gasFunding": "operator-funded",
+    "concurrentIncubation": "parallel"
+  },
+  "protocol": {
+    "version": 2,
+    "hook": "0xE5e702641Ea86F4ae6cC3cDaeD2B886f976Be044",
+    "feeEscrow": "0xd3AFEB2a57f70eF218Aa82451c51B2fb0416Ac9e",
+    "locker": "0x267444D099b10fB5Ed7c3Cc7B7c767AdcA574952",
+    "buybackVault": "0x42df2a798f82289E177311362e8f5ccC45c1219c",
+    "poolManager": "0x8366a39CC670B4001A1121B8F6A443A643e40951",
+    "universalRouter": "0x204FAca1764B154221e35c0d20aBb3c525710498",
+    "v4Quoter": "0x8dc178efb8111bb0973dd9d722ebeff267c98f94",
+    "routerCodeHash": "0x76b92a5bba2dd32019a64eb421f1750e78c6ba044dbfa6840b722eb5ac63d296",
+    "quoterCodeHash": "0xd707b1da8cb165e5ea35a3b4450d971eb562ec171e23492aa117036b78a868f6"
+  },
+  "tokenLaunchBlocks": {
+    "egg": 70332228,
+    "chick": 70333744,
+    "catalana": 70334559,
+    "polish": 70335563,
+    "silkie": 70335122
+  }
+}

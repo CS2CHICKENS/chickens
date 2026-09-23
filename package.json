@@ -1,0 +1,48 @@
+{
+  "name": "cs2-chickens",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @chickens/web",
+    "build": "npm run build --workspace @chickens/web",
+    "typecheck": "tsx scripts/typecheck.ts",
+    "test": "tsx --test packages/core/test/*.test.ts apps/worker/test/*.test.ts scripts/test/*.test.ts",
+    "test:contracts": "forge test --root contracts",
+    "test:ui": "playwright test",
+    "assets": "tsx scripts/assets.ts",
+    "assets:upload": "tsx scripts/assets-upload.ts",
+    "hatch": "tsx scripts/hatch.ts",
+    "distribute": "tsx scripts/distribute.ts",
+    "cook": "tsx scripts/cook.ts",
+    "operator": "tsx scripts/operator.ts",
+    "simulate": "tsx scripts/simulate.ts",
+    "verify:chain": "tsx scripts/verify-chain.ts",
+    "verify:release": "tsx scripts/verify-release.ts",
+    "preview": "tsx scripts/serve.ts",
+    "audit:public": "tsx scripts/audit-public.ts"
+  },
+  "dependencies": {
+    "viem": "latest",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "latest",
+    "@playwright/test": "latest",
+    "@types/node": "latest",
+    "prettier": "^3.9.9",
+    "sharp": "latest",
+    "tsx": "latest",
+    "typescript": "latest",
+    "wrangler": "latest"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "esbuild@0.28.1": true,
+    "workerd@1.20260921.1": true
+  }
+}
