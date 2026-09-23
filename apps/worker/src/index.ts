@@ -18,7 +18,7 @@ import {
   type BalanceEvent,
   type RoundPolicy,
 } from "../../../packages/core/src/index";
-import { client } from "../../../packages/core/src/chain";
+import { bounded, client } from "../../../packages/core/src/chain";
 import {
   deriveHatches,
   matchLaunch,
@@ -233,7 +233,12 @@ export async function tick(env: Env, options: TickOptions = {}) {
         };
       let to = staged
         ? (JSON.parse(staged) as { to: number }).to
-        : Math.min(cursor + (options.maxBlocks ?? 10000), safeNumber);
+        : Math.min(
+            cursor +
+              (options.maxBlocks ??
+                (env.ENVIRONMENT === "production" ? 2000 : 10000)),
+            safeNumber,
+          );
       const from = cursor + 1;
       let completed = previousRounds,
         hatches = previousHatches;
@@ -475,15 +480,20 @@ export async function tick(env: Env, options: TickOptions = {}) {
             ),
           );
         if (config.wallets.split) {
-          const logs = await rpc.getLogs({
-            address: config.wallets.split as Address,
-            event: parseAbi([
-              "event Released(uint256 devAmount,uint256 feedAmount)",
-            ])[0],
-            fromBlock: BigInt(from),
-            toBlock: BigInt(to),
-            strict: true,
-          });
+          const logs = await bounded(
+            BigInt(from),
+            BigInt(to),
+            (fromBlock, toBlock) =>
+              rpc.getLogs({
+                address: config.wallets.split as Address,
+                event: parseAbi([
+                  "event Released(uint256 devAmount,uint256 feedAmount)",
+                ])[0],
+                fromBlock,
+                toBlock,
+                strict: true,
+              }),
+          );
           for (const log of logs)
             writes.push(
               env.DB.prepare(

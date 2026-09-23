@@ -77,29 +77,27 @@ export const chain = {
 };
 export function client(backup?: string) {
   const urls = [...new Set([...(backup ? [backup] : []), ...config.rpc])];
-  const transports = (ordered: string[]) =>
+  const transports = (logs = false) =>
     fallback(
-      ordered.map((url) =>
+      urls.map((url) =>
         http(url, {
           timeout: 20000,
-          retryCount: 3,
-          retryDelay: 1000,
-          batch: { batchSize: 3, wait: 20 },
+          retryCount: 0,
+          batch: logs ? false : { batchSize: 3, wait: 20 },
         }),
       ),
-      { rank: false },
+      {
+        rank: false,
+        retryCount: 0,
+        // A smaller range should retry the same provider, not mask its error.
+        ...(logs ? { shouldThrow: logRangeError } : {}),
+      },
     );
   return createPublicClient({
     chain,
     transport: (options) => {
-      const archive = transports(urls)(options);
-      // The public archive endpoint rejects historical log ranges.
-      const logUrls = [...urls].sort(
-        (a, b) =>
-          Number(new URL(a).hostname === "robinhood.drpc.org") -
-          Number(new URL(b).hostname === "robinhood.drpc.org"),
-      );
-      const logs = transports(logUrls)(options);
+      const archive = transports()(options);
+      const logs = transports(true)(options);
       return {
         ...archive,
         request: ((args, requestOptions) =>
@@ -628,29 +626,94 @@ export async function readTokenTrades(
     );
   return result;
 }
+function logRangeError(error: unknown) {
+  const messages: string[] = [],
+    visited = new Set<unknown>();
+  for (
+    let current = error;
+    current && typeof current === "object" && !visited.has(current);
+  ) {
+    visited.add(current);
+    const item = current as {
+      code?: unknown;
+      status?: unknown;
+      shortMessage?: unknown;
+      details?: unknown;
+      message?: unknown;
+      cause?: unknown;
+    };
+    if (
+      [item.code, item.status].some(
+        (code) =>
+          typeof code === "number" &&
+          [401, 403, 408, 429, 500, 502, 503, 504].includes(code),
+      )
+    )
+      return false;
+    for (const value of [item.shortMessage, item.details, item.message])
+      if (typeof value === "string") messages.push(value);
+    current = item.cause;
+  }
+  const message = messages.join("\n");
+  if (
+    /rate[ -]?limit|too many requests|unauthori[sz]ed|forbidden|access denied|historical state|missing trie|timed? ?out|timeout|network|fetch failed/i.test(
+      message,
+    )
+  )
+    return false;
+  return /(?:block\s+)?ranges?[^\n]*(?:limit|exceed|too (?:large|wide)|over\s+\d|not supported|unsupported)|(?:query|request)[^\n]*(?:more than|exceed)[^\n]*(?:results|logs)|(?:results?|response)[^\n]*(?:too large|size[^\n]*(?:limit|exceed))|too many (?:results|logs)/i.test(
+    message,
+  );
+}
 export async function bounded<T>(
   from: bigint,
   to: bigint,
   read: (from: bigint, to: bigint) => Promise<T[]>,
-  max = 2000n,
+  max = 100n,
 ) {
-  const result: T[] = [];
+  if (max < 1n)
+    throw new RangeError("Log range must contain at least one block");
+  type Range = { from: bigint; to: bigint };
+  const pending: Range[] = [],
+    pages: { from: bigint; values: T[] }[] = [],
+    order = (a: { from: bigint }, b: { from: bigint }) =>
+      a.from < b.from ? -1 : a.from > b.from ? 1 : 0;
   let cursor = from,
-    chunk = max;
-  while (cursor <= to) {
-    const end = cursor + chunk - 1n > to ? to : cursor + chunk - 1n;
-    try {
-      result.push(...(await read(cursor, end)));
-      cursor = end + 1n;
-      chunk = chunk * 2n > max ? max : chunk * 2n;
-    } catch (error) {
-      if (
-        chunk === 1n ||
-        /rate|too many|429|historical state/i.test(String(error))
-      )
-        throw error;
-      chunk = chunk / 2n || 1n;
+    chunk = max > 100n ? 100n : max;
+  while (cursor <= to || pending.length) {
+    const ranges: Range[] = [];
+    while (ranges.length < 3 && (cursor <= to || pending.length)) {
+      const range = pending.shift() ?? { from: cursor, to };
+      const end =
+        range.from + chunk - 1n > range.to ? range.to : range.from + chunk - 1n;
+      ranges.push({ from: range.from, to: end });
+      if (range.from === cursor) cursor = end + 1n;
+      else if (end < range.to)
+        pending.unshift({ from: end + 1n, to: range.to });
     }
+    const results = await Promise.allSettled(
+      ranges.map(async (range) => read(range.from, range.to)),
+    );
+    for (let i = 0; i < results.length; i++) {
+      const result = results[i];
+      if (
+        result.status === "rejected" &&
+        (ranges[i].from === ranges[i].to || !logRangeError(result.reason))
+      )
+        throw result.reason;
+    }
+    for (let i = 0; i < results.length; i++) {
+      const result = results[i],
+        range = ranges[i];
+      if (result.status === "fulfilled") {
+        pages.push({ from: range.from, values: result.value });
+      } else {
+        const smaller = (range.to - range.from + 1n) / 2n || 1n;
+        if (smaller < chunk) chunk = smaller;
+        pending.push(range);
+      }
+    }
+    pending.sort(order);
   }
-  return result;
+  return pages.sort(order).flatMap((page) => page.values);
 }

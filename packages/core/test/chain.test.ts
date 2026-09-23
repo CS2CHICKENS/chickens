@@ -99,7 +99,7 @@ function fixture(
       const fromBlock = BigInt(query.fromBlock),
         toBlock = BigInt(query.toBlock);
       requests.push({ ...query, fromBlock, toBlock });
-      assert(toBlock - fromBlock < 2000n);
+      assert(toBlock - fromBlock < 100n);
       return hookLogs
         .filter(
           (row) => row.blockNumber >= fromBlock && row.blockNumber <= toBlock,
@@ -196,7 +196,7 @@ function fixture(
       toBlock: bigint;
     }) {
       requests.push(request);
-      assert(request.toBlock - request.fromBlock < 2000n);
+      assert(request.toBlock - request.fromBlock < 100n);
       const rows =
         request.address === curve
           ? curveLogs
@@ -428,14 +428,14 @@ test("unsupported fee changes fail closed and no log request exceeds its bound",
   );
   const wide = fixture();
   await readTokenTrades(wide.rpc, [token], 1n, 5000n);
-  assert.equal(wide.requests.length, 3);
+  assert.equal(wide.requests.length, 50);
   assert(
     wide.requests.every((request) => request.address === curve),
     "curve phase must not query nonexistent V4 pools",
   );
   const graduated = fixture([], [], [], { phase: 2 });
   await readTokenTrades(graduated.rpc, [token], 1n, 5000n);
-  assert.equal(graduated.requests.length, 9);
+  assert.equal(graduated.requests.length, 150);
   const unsupported = fixture(
     [
       log(
