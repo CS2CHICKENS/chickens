@@ -1,0 +1,80 @@
+.panel {
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--gold);
+  background: linear-gradient(115deg, #202328, #16191d);
+  margin-top: 24px;
+  padding: clamp(18px, 3vw, 32px);
+}
+.heading {
+  max-width: 900px;
+}
+.heading h2 {
+  margin-top: 9px;
+  font-size: clamp(24px, 2.5vw, 34px);
+  line-height: 1.1;
+}
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  margin-top: 25px;
+}
+.steps article {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 9px 12px;
+  align-content: start;
+}
+.number {
+  grid-row: 1/4;
+  color: var(--gold);
+  font-size: 27px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.85;
+}
+.steps h3 {
+  font-size: 20px;
+}
+.steps p {
+  font-size: 17px;
+  line-height: 1.4;
+}
+.steps a {
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 15px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.note {
+  border-top: 1px solid var(--line);
+  margin-top: 18px;
+  padding-top: 15px;
+  font-size: 16px;
+}
+.note a {
+  display: inline-block;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  margin-left: 5px;
+}
+@media (max-width: 700px) {
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .steps article + article {
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+  .steps a {
+    min-height: 36px;
+  }
+  .note a {
+    margin-left: 0;
+  }
+}
