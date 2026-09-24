@@ -327,7 +327,7 @@ export function TokenDetail({ id }: { id: string }) {
           </dl>
           {config.socials.x && (
             <a className="text-link" href={config.socials.x}>
-              FOLLOW @CS2CHICKENS ON X <LinkArrow />
+              FOLLOW @chickensRH ON X <LinkArrow />
             </a>
           )}
         </article>

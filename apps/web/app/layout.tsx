@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: { title: "CS2 Chickens" },
   twitter: {
-    site: "@CS2Chickens",
+    site: "@chickensRH",
     card: "summary_large_image",
     images: [assets + "/brand-social.png"],
   },

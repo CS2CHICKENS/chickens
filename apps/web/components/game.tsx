@@ -258,7 +258,7 @@ function Frame({ children }: { children: React.ReactNode }) {
             </Link>
             {config.socials.x && (
               <a href={config.socials.x}>
-                @CS2Chickens on X <LinkArrow />
+                @chickensRH on X <LinkArrow />
               </a>
             )}
           </div>
