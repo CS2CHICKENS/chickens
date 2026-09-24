@@ -1,4 +1,6 @@
 "use client";
+import { LinkArrow } from "./link-arrow";
+
 import { useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { KitchenScene } from "./scenes";
@@ -76,7 +78,7 @@ export function Rounds() {
             : "NOT VERIFIED",
           r.endReason,
           <a key="block" href={explorer + "/block/" + r.endBlock}>
-            {r.endBlock} ↗
+            {r.endBlock} <LinkArrow />
           </a>,
         ])}
         empty={
@@ -154,7 +156,7 @@ export function Kitchen() {
             "?tab=token_transfers"
           }
         >
-          Browse all transfers to the burn address ↗
+          Browse all transfers to the burn address <LinkArrow />
         </a>
       </p>
       <DataTable
@@ -165,7 +167,7 @@ export function Kitchen() {
           eth(c.ethIn),
           eth(c.tokensBurned, 0),
           <a key="tx" href={explorer + "/tx/" + c.tx}>
-            {short(c.tx)} ↗
+            {short(c.tx)} <LinkArrow />
           </a>,
         ])}
         empty="Completed buys and burns will appear after the first round."
@@ -223,7 +225,7 @@ export function Feed() {
           className="text-link"
           href={explorer + "/address/" + config.fees.collectionWallet}
         >
-          VIEW COLLECTION TRANSACTIONS ↗
+          VIEW COLLECTION TRANSACTIONS <LinkArrow />
         </a>
       </section>
       <FeeFlow />
@@ -376,7 +378,7 @@ export function Feed() {
             className="text-link"
             href={explorer + "/address/" + config.wallets.split}
           >
-            VERIFY THE SPLIT CONTRACT ↗
+            VERIFY THE SPLIT CONTRACT <LinkArrow />
           </a>
         ) : (
           <span className="muted">
@@ -410,7 +412,7 @@ export function Feed() {
           </span>,
           r.payoutHash ? (
             <a key="list" href={dataBase + "/payouts/" + r.id + ".json"}>
-              DOWNLOAD ↗
+              DOWNLOAD <LinkArrow />
             </a>
           ) : (
             "—"
@@ -419,14 +421,15 @@ export function Feed() {
             <div key="receipts" className="receipt-links">
               {r.payoutTransactions.map((tx, index) => (
                 <a key={tx} href={explorer + "/tx/" + tx}>
-                  BATCH {index + 1} · {short(tx)} ↗
+                  BATCH {index + 1} · {short(tx)} <LinkArrow />
                 </a>
               ))}
               {r.payoutTransactionsHasMore && (
                 <p className="muted">
                   First 100 transactions shown.{" "}
                   <Link href="/check/">
-                    Check your wallet for your complete payment history ↗
+                    Check your wallet for your complete payment history{" "}
+                    <LinkArrow />
                   </Link>
                 </p>
               )}
@@ -565,7 +568,13 @@ export function Check() {
             autoComplete="off"
           />
           <button className="button primary" disabled={busy}>
-            {busy ? "SCANNING…" : "CHECK WALLET ↗"}
+            {busy ? (
+              "SCANNING…"
+            ) : (
+              <>
+                CHECK WALLET <LinkArrow />
+              </>
+            )}
           </button>
         </div>
         <p>Read-only. No signature. No connection.</p>
@@ -621,7 +630,7 @@ export function Check() {
               grows by 0.5× per round, up to 3×.
             </p>
             <Link className="text-link" href="/whitepaper">
-              READ THE PAYOUT RULES ↗
+              READ THE PAYOUT RULES <LinkArrow />
             </Link>
           </div>
         </div>
@@ -732,7 +741,7 @@ function WalletLedgerView({ ledger }: { ledger: WalletLedger }) {
             {formatEther(BigInt(row.amountWei))}
           </span>,
           <a key="tx" href={explorer + "/tx/" + row.tx}>
-            {short(row.tx)} ↗
+            {short(row.tx)} <LinkArrow />
           </a>,
         ])}
         empty={

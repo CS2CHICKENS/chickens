@@ -1,4 +1,6 @@
 "use client";
+import { LinkArrow } from "./link-arrow";
+
 import Link from "next/link";
 import { config } from "../../../packages/core/src/index";
 import { useGame, dataBase } from "./data";
@@ -65,9 +67,12 @@ export function DataStatus() {
           <div className={styles.source}>
             <span>{mode}</span>
             <a href={explorer + "/block/" + state.headBlock}>
-              INDEXED BLOCK {state.headBlock.toLocaleString("en-US")} ↗
+              INDEXED BLOCK {state.headBlock.toLocaleString("en-US")}{" "}
+              <LinkArrow />
             </a>
-            <a href={dataBase + "/state.json"}>VIEW PUBLIC SNAPSHOT ↗</a>
+            <a href={dataBase + "/state.json"}>
+              VIEW PUBLIC SNAPSHOT <LinkArrow />
+            </a>
           </div>
         )}
       </section>
@@ -86,7 +91,9 @@ export function DataStatus() {
             earlier eggs incubate. A displayed countdown is a reveal time, not
             proof that a new token has launched.
           </p>
-          <Link href="/rounds">FOLLOW THE ROUND ↗</Link>
+          <Link href="/rounds">
+            FOLLOW THE ROUND <LinkArrow />
+          </Link>
         </section>
         <section className={styles.card}>
           <span className="eyebrow">02 / HOLDER ALLOCATIONS</span>
@@ -105,7 +112,9 @@ export function DataStatus() {
             after a verified transaction. Hatch rounds, fire rounds and timeouts
             follow different rules.
           </p>
-          <Link href="/check">CHECK MY PAYMENTS ↗</Link>
+          <Link href="/check">
+            CHECK MY PAYMENTS <LinkArrow />
+          </Link>
         </section>
         <section className={styles.card}>
           <span className="eyebrow">03 / COLLECTED FEES</span>
@@ -128,7 +137,9 @@ export function DataStatus() {
             separate amounts. Unrelated escrow credits can make a partial
             withdrawal's attribution ambiguous.
           </p>
-          <Link href="/feed">SEE THE FEE BREAKDOWN ↗</Link>
+          <Link href="/feed">
+            SEE THE FEE BREAKDOWN <LinkArrow />
+          </Link>
         </section>
         <section className={styles.card}>
           <span className="eyebrow">04 / ACTUAL PAYMENTS</span>
@@ -142,7 +153,9 @@ export function DataStatus() {
             send funds. A fresh market update does not prove a completed payout,
             and incubation does not set a payment deadline.
           </p>
-          <Link href="/feed">VIEW SETTLEMENT RECEIPTS ↗</Link>
+          <Link href="/feed">
+            VIEW SETTLEMENT RECEIPTS <LinkArrow />
+          </Link>
         </section>
       </div>
       <section
@@ -166,7 +179,9 @@ export function DataStatus() {
             {address ? (
               <>
                 <Copy value={address} />
-                <a href={explorer + "/address/" + address}>EXPLORER ↗</a>
+                <a href={explorer + "/address/" + address}>
+                  EXPLORER <LinkArrow />
+                </a>
               </>
             ) : (
               <span>AWAITING DEPLOYMENT</span>

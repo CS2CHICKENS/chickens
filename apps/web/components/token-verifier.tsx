@@ -1,4 +1,6 @@
 "use client";
+import { LinkArrow } from "./link-arrow";
+
 import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { isAddress } from "viem";
@@ -152,14 +154,14 @@ export function TokenVerifier() {
                 <Copy value={match.address} />
                 <div className={styles.actions}>
                   <Link className="button primary" href={"/tokens/" + match.id}>
-                    TOKEN DETAILS ↗
+                    TOKEN DETAILS <LinkArrow />
                   </Link>
                   <Buy address={match.address} />
                   <a
                     className="button"
                     href={explorer + "/token/" + match.address}
                   >
-                    EXPLORER ↗
+                    EXPLORER <LinkArrow />
                   </a>
                 </div>
                 <p className={styles.proof}>
@@ -206,13 +208,13 @@ export function TokenVerifier() {
                   </p>
                   <div className={styles.actions}>
                     <Link className="button" href="/inventory">
-                      BROWSE OFFICIAL INVENTORY ↗
+                      BROWSE OFFICIAL INVENTORY <LinkArrow />
                     </Link>
                     <a
                       className="text-link"
                       href={explorer + "/address/" + checked}
                     >
-                      VIEW ADDRESS ON EXPLORER ↗
+                      VIEW ADDRESS ON EXPLORER <LinkArrow />
                     </a>
                   </div>
                 </>
@@ -249,7 +251,10 @@ export function TokenVerifier() {
                 }}
                 aria-label={"Check " + token.symbol + " example"}
               >
-                {token.symbol} <span aria-hidden="true">↗</span>
+                {token.symbol}{" "}
+                <span aria-hidden="true">
+                  <LinkArrow />
+                </span>
               </button>
             ))}
           </div>

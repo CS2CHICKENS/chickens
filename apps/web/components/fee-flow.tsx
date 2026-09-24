@@ -1,3 +1,4 @@
+import { LinkArrow } from "./link-arrow";
 import Link from "next/link";
 import { Explain } from "./help";
 
@@ -105,7 +106,7 @@ export function FeeFlow() {
             rules.
           </p>
           <Link className="text-link" href="/whitepaper">
-            READ ALL DISTRIBUTION RULES ↗
+            READ ALL DISTRIBUTION RULES <LinkArrow />
           </Link>
         </Explain>
       </div>

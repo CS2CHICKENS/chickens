@@ -1,4 +1,5 @@
 "use client";
+import { LinkArrow } from "./link-arrow";
 
 import Link from "next/link";
 import { formatEther } from "viem";
@@ -84,7 +85,10 @@ export function FeedSources() {
                 <Art id={id} />
                 <div>
                   <h3>
-                    {human(id).toUpperCase()} <span aria-hidden="true">↗</span>
+                    {human(id).toUpperCase()}{" "}
+                    <span aria-hidden="true">
+                      <LinkArrow />
+                    </span>
                   </h3>
                   <span className="eyebrow">
                     {support ? "FUNDS THE FEED" : "FAMILY RACE + FEED"}

@@ -1,4 +1,6 @@
 "use client";
+import { LinkArrow } from "./link-arrow";
+
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useMotionPreference } from "./motion-preference";
 import { assetBase } from "./data";
@@ -139,7 +141,13 @@ export function KitchenScene({ animate = false }: { animate?: boolean }) {
           </span>
           {!reduced && (
             <button className="button" onClick={() => setRun((v) => v + 1)}>
-              {run ? "REPLAY COOK ↺" : "PLAY COOK ↗"}
+              {run ? (
+                "REPLAY COOK ↺"
+              ) : (
+                <>
+                  PLAY COOK <LinkArrow />
+                </>
+              )}
             </button>
           )}
           <small>VISUAL PREVIEW</small>

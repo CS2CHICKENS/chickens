@@ -1,4 +1,6 @@
 "use client";
+import { LinkArrow } from "./link-arrow";
+
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { motion } from "motion/react";
@@ -103,7 +105,9 @@ export function FamilyBattle() {
               </div>
               <div className="battle-share">
                 <span>{share.toFixed(1)}% OF ALL FAMILY VOLUME</span>
-                <Link href={"/inventory/" + f.id}>VIEW FAMILY ↗</Link>
+                <Link href={"/inventory/" + f.id}>
+                  VIEW FAMILY <LinkArrow />
+                </Link>
               </div>
               <div className="battle-lineup">
                 {members.map((id) => {
@@ -181,7 +185,9 @@ export function FamilyBattle() {
               <span>{human(t.token).toUpperCase()}</span>
               <span>{t.side.toUpperCase()}</span>
               <strong className="digits">{t.ethAmount.toFixed(3)} ETH</strong>
-              <span>{short(t.tx)} ↗</span>
+              <span>
+                {short(t.tx)} <LinkArrow />
+              </span>
             </a>
           ))}
         {!state.ticker.some((t) =>

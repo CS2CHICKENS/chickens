@@ -1,3 +1,4 @@
+import { LinkArrow } from "./link-arrow";
 import Link from "next/link";
 import styles from "./participation.module.css";
 
@@ -18,7 +19,9 @@ export function Participation() {
             An original chicken and every launched variant compete together. All
             their trading volume adds to one family score.
           </p>
-          <Link href="/inventory">EXPLORE THE CHICKENS ↗</Link>
+          <Link href="/inventory">
+            EXPLORE THE CHICKENS <LinkArrow />
+          </Link>
         </article>
         <article>
           <span className={styles.number}>02</span>
@@ -28,7 +31,7 @@ export function Participation() {
             More personal trading does not directly mean a bigger reward.
           </p>
           <Link href="/whitepaper#7-who-gets-paid-and-how-much">
-            HOW REWARDS WORK ↗
+            HOW REWARDS WORK <LinkArrow />
           </Link>
         </article>
         <article>
@@ -39,13 +42,17 @@ export function Participation() {
             address. Eligible payments are sent after operator settlement; no
             claim transaction is needed here.
           </p>
-          <Link href="/check">CHECK MY WALLET ↗</Link>
+          <Link href="/check">
+            CHECK MY WALLET <LinkArrow />
+          </Link>
         </article>
       </div>
       <p className={styles.note}>
         CHICK has a separate holder share in hatch rounds. EGG receives buybacks
         and burns. Timeout and fire rounds pay no holder rewards.{" "}
-        <Link href="/verify">VERIFY A TOKEN ADDRESS ↗</Link>
+        <Link href="/verify">
+          VERIFY A TOKEN ADDRESS <LinkArrow />
+        </Link>
       </p>
     </section>
   );

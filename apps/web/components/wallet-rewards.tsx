@@ -1,4 +1,6 @@
 "use client";
+import { LinkArrow } from "./link-arrow";
+
 import Link from "next/link";
 import { formatEther } from "viem";
 import { config } from "../../../packages/core/src/index";
@@ -78,7 +80,7 @@ export function WalletRewards({ ledger }: { ledger: WalletLedger }) {
                         className={styles.plan}
                         href={`${dataBase}/payouts/${row.round}.json`}
                       >
-                        ROUND {row.round} PLAN ↗
+                        ROUND {row.round} PLAN <LinkArrow />
                       </a>
                     </dd>
                   </div>
@@ -109,7 +111,7 @@ export function WalletRewards({ ledger }: { ledger: WalletLedger }) {
         </p>
       </Explain>
       <Link className={styles.allPlans} href="/feed/">
-        ALL PAYOUT PLANS ↗
+        ALL PAYOUT PLANS <LinkArrow />
       </Link>
     </section>
   );

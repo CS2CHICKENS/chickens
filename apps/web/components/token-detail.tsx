@@ -1,4 +1,6 @@
 "use client";
+import { LinkArrow } from "./link-arrow";
+
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { config } from "../../../packages/core/src/index";
@@ -125,10 +127,10 @@ export function TokenDetail({ id }: { id: string }) {
                     "https://gmgn.ai/robinhood/token/" + address.toLowerCase()
                   }
                 >
-                  GMGN ↗
+                  GMGN <LinkArrow />
                 </a>
                 <a className="button" href={explorer + "/token/" + address}>
-                  EXPLORER ↗
+                  EXPLORER <LinkArrow />
                 </a>
               </div>
               <p className="token-note">
@@ -147,7 +149,7 @@ export function TokenDetail({ id }: { id: string }) {
                   : "This variant must hatch and officially launch before it can be traded or contribute to its family."}
               </p>
               <Link className="text-link" href="/incubator">
-                VISIT THE INCUBATOR ↗
+                VISIT THE INCUBATOR <LinkArrow />
               </Link>
             </div>
           )}
@@ -211,7 +213,7 @@ export function TokenDetail({ id }: { id: string }) {
                 does not create a holder payout.
               </p>
               <Link className="text-link" href="/kitchen">
-                SEE VERIFIED COOKS ↗
+                SEE VERIFIED COOKS <LinkArrow />
               </Link>
             </>
           ) : (
@@ -231,12 +233,12 @@ export function TokenDetail({ id }: { id: string }) {
                 rarity does not multiply your payout.
               </p>
               <Link className="text-link" href="/rounds">
-                FOLLOW THE FAMILY RACE ↗
+                FOLLOW THE FAMILY RACE <LinkArrow />
               </Link>
             </>
           )}
           <Link className="text-link" href="/whitepaper">
-            READ THE FULL RULES ↗
+            READ THE FULL RULES <LinkArrow />
           </Link>
         </article>
         <article className="panel token-role">
@@ -273,7 +275,7 @@ export function TokenDetail({ id }: { id: string }) {
                 <dt>COOK DESTINATION</dt>
                 <dd>
                   <a href={explorer + "/address/" + config.wallets.burn}>
-                    {config.wallets.burn} ↗
+                    {config.wallets.burn} <LinkArrow />
                   </a>
                 </dd>
               </div>
@@ -284,7 +286,7 @@ export function TokenDetail({ id }: { id: string }) {
                 <dd>
                   {hatch.round} ·{" "}
                   <a href={explorer + "/block/" + hatch.block}>
-                    Verify block {hatch.block} ↗
+                    Verify block {hatch.block} <LinkArrow />
                   </a>
                 </dd>
               </div>
@@ -307,7 +309,7 @@ export function TokenDetail({ id }: { id: string }) {
                         base.id as keyof typeof config.tokenLaunchBlocks
                       ]
                     }{" "}
-                    ↗
+                    <LinkArrow />
                   </a>
                 </dd>
               </div>
@@ -325,7 +327,7 @@ export function TokenDetail({ id }: { id: string }) {
           </dl>
           {config.socials.x && (
             <a className="text-link" href={config.socials.x}>
-              FOLLOW @CS2CHICKENS ON X ↗
+              FOLLOW @CS2CHICKENS ON X <LinkArrow />
             </a>
           )}
         </article>
@@ -334,7 +336,9 @@ export function TokenDetail({ id }: { id: string }) {
         <section className="token-family">
           <div className="section-label">
             <h2>THE SAME FAMILY. THE SAME SCORE.</h2>
-            <Link href={"/inventory/" + family.id}>FULL COLLECTION ↗</Link>
+            <Link href={"/inventory/" + family.id}>
+              FULL COLLECTION <LinkArrow />
+            </Link>
           </div>
           <div className="token-siblings">
             {members.map((member) => (
@@ -367,7 +371,7 @@ export function TokenDetail({ id }: { id: string }) {
               trade.side.toUpperCase(),
               number(trade.ethAmount, " ETH"),
               <a href={explorer + "/tx/" + trade.tx} key={trade.tx}>
-                VERIFY TRADE ↗
+                VERIFY TRADE <LinkArrow />
               </a>,
             ])}
             empty="No trades for this token in the latest published feed."
@@ -386,7 +390,9 @@ export function TokenDetail({ id }: { id: string }) {
           reward weight. Check your own eligible holdings and payout receipts on
           the wallet page.
         </p>
-        <Link href="/check">CHECK YOUR WALLET ↗</Link>
+        <Link href="/check">
+          CHECK YOUR WALLET <LinkArrow />
+        </Link>
       </Explain>
     </div>
   );

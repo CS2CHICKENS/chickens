@@ -1,4 +1,6 @@
 "use client";
+import { LinkArrow } from "./link-arrow";
+
 import Link from "next/link";
 import { useState, type CSSProperties } from "react";
 import { motion } from "motion/react";
@@ -117,7 +119,7 @@ export function Inventory({ family }: { family?: string }) {
                   className="text-link token-details-link"
                   href={"/tokens/" + item.id}
                 >
-                  TOKEN DETAILS ↗
+                  TOKEN DETAILS <LinkArrow />
                 </Link>
                 {launched ? (
                   <>

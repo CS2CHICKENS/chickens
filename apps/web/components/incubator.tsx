@@ -1,4 +1,6 @@
 "use client";
+import { LinkArrow } from "./link-arrow";
+
 import { useEffect, useState } from "react";
 import { Scene } from "./scenes";
 import { Explain } from "./help";
@@ -396,7 +398,7 @@ export function Incubator() {
             )}
             {showPreview && !preview && (
               <button className="button" onClick={() => setPreview(true)}>
-                PREVIEW THE HATCH ↗
+                PREVIEW THE HATCH <LinkArrow />
               </button>
             )}
             {preview && (
@@ -429,7 +431,7 @@ export function Incubator() {
                   )
                 }
               >
-                SHARE ON X ↗
+                SHARE ON X <LinkArrow />
               </a>
             )}
           </div>
@@ -453,7 +455,7 @@ export function Incubator() {
                 <dt>BLOCK</dt>
                 <dd>
                   <a href={explorer + "/block/" + result.block}>
-                    {result.block} ↗
+                    {result.block} <LinkArrow />
                   </a>
                 </dd>
               </div>

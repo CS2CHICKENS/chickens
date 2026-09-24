@@ -1,4 +1,6 @@
 "use client";
+import { LinkArrow } from "./link-arrow";
+
 import Link from "next/link";
 import { NestPreview, KitchenScene } from "./scenes";
 import { FamilyHelp } from "./help";
@@ -215,20 +217,25 @@ function Frame({ children }: { children: React.ReactNode }) {
         >
           {state.updatedAt
             ? "BLOCK " + state.headBlock.toLocaleString("en-US")
-            : "PUBLIC CHAIN · PUBLIC PROOF"}
-          {" ↗"}
+            : "PUBLIC CHAIN · PUBLIC PROOF"}{" "}
+          <LinkArrow />
         </Link>
       </div>
       {delayed && state.updatedAt > 0 && (
         <div role="status" className="delay">
           Data delayed · showing the last verified state.{" "}
-          <Link href="/status">CHECK DATA STATUS ↗</Link>
+          <Link href="/status">
+            CHECK DATA STATUS <LinkArrow />
+          </Link>
         </div>
       )}
       {connection === "unavailable" && !state.updatedAt && (
         <div role="status" className="delay">
           Public data is unavailable. Amounts are unknown; retrying
-          automatically. <Link href="/status">CHECK DATA STATUS ↗</Link>
+          automatically.{" "}
+          <Link href="/status">
+            CHECK DATA STATUS <LinkArrow />
+          </Link>
         </div>
       )}
       <main>{children}</main>
@@ -240,11 +247,19 @@ function Frame({ children }: { children: React.ReactNode }) {
             <em>ON THE RECORD.</em>
           </strong>
           <div>
-            <Link href="/whitepaper">Read the rules ↗</Link>
-            <Link href="/verify">Verify a token ↗</Link>
-            <Link href="/status">Data & payments ↗</Link>
+            <Link href="/whitepaper">
+              Read the rules <LinkArrow />
+            </Link>
+            <Link href="/verify">
+              Verify a token <LinkArrow />
+            </Link>
+            <Link href="/status">
+              Data & payments <LinkArrow />
+            </Link>
             {config.socials.x && (
-              <a href={config.socials.x}>@CS2Chickens on X ↗</a>
+              <a href={config.socials.x}>
+                @CS2Chickens on X <LinkArrow />
+              </a>
             )}
           </div>
         </div>
@@ -445,7 +460,9 @@ function FeedMeter() {
           <small>ETH</small>
         </strong>
         <p>Creator fees from every official token feed this round.</p>
-        <span className="text-link">FOLLOW THE FEED ↗</span>
+        <span className="text-link">
+          FOLLOW THE FEED <LinkArrow />
+        </span>
       </div>
       <Art
         id={
@@ -492,7 +509,10 @@ export function Home() {
             <em>RULE THE COOP.</em>
           </h1>
           <Link className="button primary" href="/inventory">
-            OPEN INVENTORY <span>↗</span>
+            OPEN INVENTORY{" "}
+            <span>
+              <LinkArrow />
+            </span>
           </Link>
         </div>
         <div className="hero-coordinate">
@@ -536,7 +556,9 @@ export function Home() {
               {state.incubator.status === "incubating" && (
                 <p>The current round keeps counting trades.</p>
               )}
-              <span className="text-link">ENTER THE INCUBATOR ↗</span>
+              <span className="text-link">
+                ENTER THE INCUBATOR <LinkArrow />
+              </span>
             </div>
             <NestPreview />
           </Link>
@@ -545,7 +567,9 @@ export function Home() {
               <span className="eyebrow">THE KITCHEN</span>
               <h2>FEEL THE HEAT.</h2>
               <p>Buy. Burn. Verify.</p>
-              <span className="text-link">VIEW THE COOKS ↗</span>
+              <span className="text-link">
+                VIEW THE COOKS <LinkArrow />
+              </span>
             </div>
             <KitchenScene />
           </Link>
@@ -584,7 +608,9 @@ export function Home() {
           <section className="panel">
             <div className="section-label">
               <h2>LATEST HATCHES</h2>
-              <Link href="/incubator">VIEW ALL ↗</Link>
+              <Link href="/incubator">
+                VIEW ALL <LinkArrow />
+              </Link>
             </div>
             {state.history.hatches.length ? (
               state.history.hatches
@@ -638,7 +664,7 @@ export function Buy({ address }: { address: string }) {
       href={"https://www.ponsfamily.com/launchpad/" + address}
       title={"View this token on pons: " + address}
     >
-      OPEN PONS ↗
+      OPEN PONS <LinkArrow />
     </a>
   );
 }
